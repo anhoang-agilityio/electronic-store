@@ -30,7 +30,6 @@ export default tseslint.config(
       'generators',
     ],
     extends: [
-      js.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked,
       ...tseslint.configs.stylisticTypeChecked,
       prettierRecommended,
@@ -52,8 +51,10 @@ export default tseslint.config(
       import: importPlugin,
       prettier: prettier,
       react,
+      js,
     },
     rules: {
+      ...js.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
@@ -99,7 +100,7 @@ export default tseslint.config(
       'check-file/filename-naming-convention': [
         'error',
         {
-          '**/*.{ts,tsx,html,css,scss}': 'KEBAB_CASE',
+          '**/*.{ts,tsx}': 'KEBAB_CASE',
         },
         {
           ignoreMiddleExtensions: true,
@@ -108,7 +109,8 @@ export default tseslint.config(
       'check-file/folder-naming-convention': [
         'error',
         {
-          '**/*': 'KEBAB_CASE',
+          '!(src/app)/**/*': 'KEBAB_CASE',
+          '!(**/__tests__)/**/*': 'KEBAB_CASE',
         },
       ],
     },
