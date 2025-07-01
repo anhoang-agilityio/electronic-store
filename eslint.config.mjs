@@ -61,6 +61,7 @@ export default tseslint.config(
       ...importPlugin.flatConfigs.recommended.rules,
       ...importPlugin.flatConfigs.typescript.rules,
       'no-console': 'error',
+      'no-unused-vars': 'off',
       'react/prop-types': 'off',
       'react/react-in-jsx-scope': 'off',
       '@typescript-eslint/no-unused-vars': ['error'],

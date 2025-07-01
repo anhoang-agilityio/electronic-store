@@ -1,9 +1,11 @@
+import { BrandList } from '@/features/brands/components';
 import AirpodsMaxBanner from '@/features/products/components/banners/airpods-max';
 import Iphone14Banner from '@/features/products/components/banners/iphone-14-pro';
 import MacbookAirBanner from '@/features/products/components/banners/macbook-air';
 import Playstation5Banner from '@/features/products/components/banners/playstation-5';
 import SummerSaleBanner from '@/features/products/components/banners/summer-sale';
 import VisionProBanner from '@/features/products/components/banners/vision-pro';
+import { ProductCard } from '@/features/products/components/product-card';
 
 export default function Home() {
   return (
@@ -25,7 +27,20 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <div className="w-65 rounded-md">
+        <ProductCard
+          product={{
+            id: '1',
+            name: 'Apple iPhone 6 Plus',
+            price: 100,
+            image:
+              'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-6-plus2.jpg',
+            isFavorite: false,
+          }}
+        />
+      </div>
       <SummerSaleBanner />
+      <BrandList />
     </>
   );
 }

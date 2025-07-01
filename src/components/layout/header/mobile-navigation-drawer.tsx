@@ -66,8 +66,8 @@ export function MobileNavigationDrawer() {
         <DrawerHeader className="flex flex-row items-center justify-between">
           <DrawerTitle>Navigation</DrawerTitle>
           <DrawerClose asChild>
-            <Button variant="ghost" size="icon-circle" className="w-8 h-8">
-              <X className="w-4 h-4" />
+            <Button variant="ghost" size="icon-circle" className="size-8">
+              <X className="size-4" />
             </Button>
           </DrawerClose>
         </DrawerHeader>
