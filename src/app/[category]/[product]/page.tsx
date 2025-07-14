@@ -17,9 +17,10 @@ import { snakeToTitleCase } from '@/utils/string';
 export async function generateMetadata({
   params,
 }: {
-  params: { product: string };
+  params: Promise<{ product: string }>;
 }): Promise<Metadata> {
-  const product = await getProduct(params.product);
+  const productId = (await params).product;
+  const product = await getProduct(productId);
 
   return {
     title: product.name,

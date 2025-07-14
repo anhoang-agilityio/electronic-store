@@ -11,10 +11,11 @@ import { Sort } from '@/types/api';
 export async function generateMetadata({
   params,
 }: {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 }): Promise<Metadata> {
+  const category = (await params).category;
   const categories = await getCategories();
-  const categoryObj = categories.find((c) => c.id === params.category);
+  const categoryObj = categories.find((c) => c.id === category);
   const categoryName = categoryObj?.name ?? 'Category';
 
   return {
