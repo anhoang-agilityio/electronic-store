@@ -5,12 +5,12 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium cursor-pointer transition-all disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-16 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium cursor-pointer transition-all disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-30 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
         default:
-          'bg-primary text-primary-foreground shadow-xs hover:bg-primary/90',
+          'bg-primary text-primary-foreground shadow-xs border border-primary hover:bg-primary/90',
         destructive:
           'bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
         outline:
@@ -26,8 +26,9 @@ const buttonVariants = cva(
         md: 'text-sm rounded-md px-4 py-3 gap-3',
         lg: 'text-sm rounded-lg px-6 py-4',
         xl: 'text-base rounded-sm px-14 py-4',
-        'icon-rec': 'size-13 rounded-md',
-        'icon-circle': 'size-12 rounded-full',
+        'icon-rec': 'size-13 [&_svg]:size-1/2! [&_img]:size-1/2! rounded-md',
+        'icon-circle':
+          'size-12 [&_svg]:size-1/2! [&_img]:size-1/2! rounded-full',
       },
     },
     defaultVariants: {

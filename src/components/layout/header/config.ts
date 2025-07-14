@@ -5,7 +5,6 @@ import {
   FileText,
   Heart,
   ShoppingCart,
-  User,
 } from 'lucide-react';
 
 export const navigationSections = {
@@ -34,24 +33,15 @@ export const navigationSections = {
       },
     ],
   },
-  user: {
-    title: 'Account',
-    links: [
-      {
-        href: '/favorites',
-        icon: Heart,
-        label: 'Favorites',
-      },
-      {
-        href: '/cart',
-        icon: ShoppingCart,
-        label: 'Cart',
-      },
-      {
-        href: '/profile',
-        icon: User,
-        label: 'Profile',
-      },
-    ],
+  cart: {
+    href: '/cart',
+    icon: ShoppingCart,
+    label: 'Cart',
   },
-} as const;
+  favorites: {
+    href: '/favorites',
+    icon: Heart,
+    label: 'Favorites',
+    disabled: true,
+  },
+};

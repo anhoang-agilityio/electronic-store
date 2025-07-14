@@ -33,7 +33,7 @@ const socials = [
   { icon: '/instagram.svg', label: 'Instagram', href: '#' },
 ];
 
-export default function Footer() {
+export function Footer() {
   return (
     <footer className="bg-primary">
       <div className="max-w-screen-xl mx-auto px-4 py-12 md:px-10 md:py-26 grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] justify-between gap-6 text-center md:text-left">

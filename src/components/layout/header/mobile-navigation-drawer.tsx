@@ -15,6 +15,7 @@ import {
 import { NavLink } from '@/components/ui/nav-link';
 
 import { navigationSections } from './config';
+import { UserMenuMobile } from './user-menu-mobile';
 
 type NavigationSectionProps = {
   title: string;
@@ -64,7 +65,7 @@ export function MobileNavigationDrawer() {
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="flex flex-row items-center justify-between">
-          <DrawerTitle>Navigation</DrawerTitle>
+          <DrawerTitle>Menu</DrawerTitle>
           <DrawerClose asChild>
             <Button variant="ghost" size="icon-circle" className="size-8">
               <X className="size-4" />
@@ -73,14 +74,47 @@ export function MobileNavigationDrawer() {
         </DrawerHeader>
 
         <div className="flex flex-col p-4 gap-6">
-          {Object.entries(navigationSections).map(([key, section]) => (
-            <NavigationSection
-              key={key}
-              title={section.title}
-              links={section.links}
-              onClose={() => setOpen(false)}
-            />
-          ))}
+          {/* User Section */}
+          <UserMenuMobile onClose={() => setOpen(false)} />
+
+          {/* Main Navigation */}
+          <NavigationSection
+            title={navigationSections.public.title}
+            links={navigationSections.public.links}
+            onClose={() => setOpen(false)}
+          />
+
+          {/* Account Actions */}
+          <div className="space-y-2">
+            <h3 className="font-medium text-muted-foreground uppercase tracking-wide px-4">
+              Actions
+            </h3>
+            <div className="flex flex-col gap-1">
+              <Button
+                asChild
+                variant="ghost"
+                className="text-base justify-start"
+                onClick={() => setOpen(false)}
+              >
+                <NavLink
+                  href={navigationSections.cart.href}
+                  activeClassName="bg-accent"
+                >
+                  <navigationSections.cart.icon className="size-5" />
+                  {navigationSections.cart.label}
+                </NavLink>
+              </Button>
+              <Button
+                variant="ghost"
+                className="text-base justify-start"
+                disabled
+                title="Favorites is disabled"
+              >
+                <navigationSections.favorites.icon className="size-5" />
+                {navigationSections.favorites.label}
+              </Button>
+            </div>
+          </div>
         </div>
       </DrawerContent>
     </Drawer>

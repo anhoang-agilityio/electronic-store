@@ -1,17 +1,24 @@
-import { BrandList } from '@/features/brands/components';
-import AirpodsMaxBanner from '@/features/products/components/banners/airpods-max';
-import Iphone14Banner from '@/features/products/components/banners/iphone-14-pro';
-import MacbookAirBanner from '@/features/products/components/banners/macbook-air';
-import Playstation5Banner from '@/features/products/components/banners/playstation-5';
-import SummerSaleBanner from '@/features/products/components/banners/summer-sale';
-import VisionProBanner from '@/features/products/components/banners/vision-pro';
-import { ProductCard } from '@/features/products/components/product-card';
+import { CategoryList } from '@/features/category/components/category-list/category-list';
+import { AirpodsMaxBanner } from '@/features/product/components/banners/airpods-max';
+import { Iphone14ProBanner } from '@/features/product/components/banners/iphone-14-pro';
+import { MacbookAirBanner } from '@/features/product/components/banners/macbook-air';
+import { Playstation5Banner } from '@/features/product/components/banners/playstation-5';
+import { SummerSaleBanner } from '@/features/product/components/banners/summer-sale';
+import { VisionProBanner } from '@/features/product/components/banners/vision-pro';
+import { ProductDiscount } from '@/features/product/components/product-discount';
+import { ProductTab } from '@/features/product/components/product-tab';
 
-export default function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
+  const { tab } = await searchParams;
+
   return (
-    <>
-      <div>
-        <Iphone14Banner />
+    <main>
+      <section>
+        <Iphone14ProBanner />
         <div className="grid grid-cols-1 md:grid-cols-[25%_25%_50%]">
           <div className="md:col-span-2">
             <Playstation5Banner />
@@ -26,21 +33,23 @@ export default function Home() {
             <VisionProBanner />
           </div>
         </div>
-      </div>
-      <div className="w-65 rounded-md">
-        <ProductCard
-          product={{
-            id: '1',
-            name: 'Apple iPhone 6 Plus',
-            price: 100,
-            image:
-              'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-6-plus2.jpg',
-            isFavorite: false,
-          }}
-        />
-      </div>
-      <SummerSaleBanner />
-      <BrandList />
-    </>
+      </section>
+
+      <section className="px-4 py-16">
+        <CategoryList />
+      </section>
+
+      <section>
+        <ProductTab tab={tab} />
+      </section>
+
+      <section className="py-14">
+        <ProductDiscount />
+      </section>
+
+      <section>
+        <SummerSaleBanner />
+      </section>
+    </main>
   );
 }
