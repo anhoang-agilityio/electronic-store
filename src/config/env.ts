@@ -2,11 +2,13 @@ import { z } from 'zod';
 
 const createEnv = () => {
   const EnvSchema = z.object({
+    BASE_URL: z.string(),
     API_URL: z.string(),
     API_KEY: z.string(),
   });
 
   const envVars = {
+    BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
     API_URL: process.env.NEXT_PUBLIC_API_URL,
     API_KEY: process.env.NEXT_PUBLIC_API_KEY,
   };

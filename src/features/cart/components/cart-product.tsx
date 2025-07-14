@@ -39,7 +39,7 @@ export function CartProduct({ product, quantity }: CartProductProps) {
       </div>
 
       {/* Content */}
-      <div className="flex flex-col sm:flex-row gap-4 flex-1 max-w-max justify-between sm:items-center">
+      <div className="flex flex-col sm:flex-row gap-4 flex-1 justify-between sm:items-center">
         {/* Product Info */}
         <div className="flex-1 space-y-2">
           <h2 className="font-medium leading-tight line-clamp-3">
@@ -49,7 +49,7 @@ export function CartProduct({ product, quantity }: CartProductProps) {
         </div>
 
         {/* Counter, Price, Remove */}
-        <div className="flex items-center justify-between gap-6">
+        <div className="flex items-center justify-between sm:gap-6">
           {/* Quantity Counter */}
           <div className="flex items-center gap-2">
             <Button
@@ -77,7 +77,7 @@ export function CartProduct({ product, quantity }: CartProductProps) {
           </div>
 
           {/* Price */}
-          <div className="font-medium text-xl min-w-16 text-right">
+          <div className="font-medium text-xl min-w-16">
             ${(product.price * quantity).toLocaleString()}
           </div>
 

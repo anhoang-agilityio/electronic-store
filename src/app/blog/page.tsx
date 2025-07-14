@@ -1,5 +1,10 @@
 import React from 'react';
 
+export const metadata = {
+  title: 'Blog',
+  description: 'Read the latest news, tips, and updates from Electronic Store.',
+};
+
 export default function BlogPage() {
   return (
     <main className="container mx-auto px-4 py-10">

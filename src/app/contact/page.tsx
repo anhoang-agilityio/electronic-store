@@ -1,5 +1,11 @@
 import React from 'react';
 
+export const metadata = {
+  title: 'Contact Us',
+  description:
+    'Get in touch with Electronic Store for support, inquiries, or feedback.',
+};
+
 export default function ContactUsPage() {
   return (
     <main className="container mx-auto px-4 py-10">

@@ -1,11 +1,27 @@
+import type { Metadata } from 'next';
 import React from 'react';
 
-import { getBrands, getProducts } from '@/api/api-client';
+import { getBrands, getProducts, getCategories } from '@/api/api-client';
 import { ProductFilter } from '@/features/product/components/product-filter';
 import { ProductGrid } from '@/features/product/components/product-layout/product-grid';
 import { ProductSort } from '@/features/product/components/product-sort';
 import { adaptApiProductToProductCard } from '@/features/product/utils/dto';
 import { Sort } from '@/types/api';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { category: string };
+}): Promise<Metadata> {
+  const categories = await getCategories();
+  const categoryObj = categories.find((c) => c.id === params.category);
+  const categoryName = categoryObj?.name ?? 'Category';
+
+  return {
+    title: categoryName,
+    description: `Browse and filter the best ${categoryName} products at Electronic Store. Find the latest and most suitable electronics for your needs.`,
+  };
+}
 
 type CategoryPageProps = {
   params: Promise<{ category: string }>;

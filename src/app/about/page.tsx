@@ -1,5 +1,11 @@
 import React from 'react';
 
+export const metadata = {
+  title: 'About Us',
+  description:
+    'Learn more about Electronic Store, our mission, and our core values.',
+};
+
 export default function AboutPage() {
   return (
     <main className="container mx-auto px-4 py-10">

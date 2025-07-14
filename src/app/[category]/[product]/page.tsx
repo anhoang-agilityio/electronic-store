@@ -1,4 +1,5 @@
 import { BadgeCheck, House, Truck } from 'lucide-react';
+import type { Metadata } from 'next';
 import Image from 'next/image';
 
 import { getProduct } from '@/api/api-client';
@@ -12,6 +13,44 @@ import { ProductRelated } from '@/features/product/components/product-related';
 import { ProductReview } from '@/features/product/components/product-review';
 import { getDiscountedPrice } from '@/utils/price';
 import { snakeToTitleCase } from '@/utils/string';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { product: string };
+}): Promise<Metadata> {
+  const product = await getProduct(params.product);
+
+  return {
+    title: product.name,
+    description: product.description,
+    openGraph: {
+      title: product.name,
+      description: product.description,
+      images: [
+        {
+          url: product.images[0] ?? '',
+          width: 800,
+          height: 800,
+          alt: product.name,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: product.name,
+      description: product.description,
+      images: [
+        {
+          url: product.images[0] ?? '',
+          width: 800,
+          height: 800,
+          alt: product.name,
+        },
+      ],
+    },
+  };
+}
 
 export default async function ProductPage({
   params,

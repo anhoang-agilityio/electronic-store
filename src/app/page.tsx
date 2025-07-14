@@ -1,3 +1,5 @@
+import { type Metadata } from 'next';
+
 import { CategoryList } from '@/features/category/components/category-list/category-list';
 import { AirpodsMaxBanner } from '@/features/product/components/banners/airpods-max';
 import { Iphone14ProBanner } from '@/features/product/components/banners/iphone-14-pro';
@@ -7,6 +9,37 @@ import { SummerSaleBanner } from '@/features/product/components/banners/summer-s
 import { VisionProBanner } from '@/features/product/components/banners/vision-pro';
 import { ProductDiscount } from '@/features/product/components/product-discount';
 import { ProductTab } from '@/features/product/components/product-tab';
+
+export const metadata: Metadata = {
+  title: 'Electronic Store - Modern Electronics Shop',
+  description:
+    'Discover the latest, genuine electronics at the best prices at Electronic Store.',
+  openGraph: {
+    title: 'Electronic Store - Modern Electronics Shop',
+    description:
+      'Discover the latest, genuine electronics at the best prices at Electronic Store.',
+    images: [
+      {
+        url: '/summer-sale.png',
+        width: 1200,
+        height: 630,
+        alt: 'Electronic Store Summer Sale',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Electronic Store - Modern Electronics Shop',
+    description:
+      'Discover the latest, genuine electronics at the best prices at Electronic Store.',
+    images: {
+      url: '/summer-sale.png',
+      width: 1200,
+      height: 630,
+      alt: 'Electronic Store Summer Sale',
+    },
+  },
+};
 
 export default async function Home({
   searchParams,
