@@ -12,6 +12,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { withSuspense } from '@/components/utils/with-suspense';
 import {
   ProductCard,
   type ProductCardProps,
@@ -28,7 +29,7 @@ export type ProductGridProps = Omit<ProductCardProps, 'product'> & {
   itemsPerPage?: number;
 };
 
-export function ProductGrid({
+export const ProductGrid = withSuspense(function ({
   products,
   columns = 4,
   rows = 2,
@@ -197,4 +198,4 @@ export function ProductGrid({
       {renderPagination()}
     </>
   );
-}
+});

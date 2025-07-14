@@ -9,6 +9,7 @@ import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { withSuspense } from '@/components/utils/with-suspense';
 
 const SignInSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
@@ -19,7 +20,7 @@ const SignInSchema = z.object({
 
 type SignInFormValues = z.infer<typeof SignInSchema>;
 
-export default function SignInPage() {
+const SignInPage = withSuspense(function () {
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState('');
 
@@ -145,4 +146,6 @@ export default function SignInPage() {
       </div>
     </div>
   );
-}
+});
+
+export default SignInPage;

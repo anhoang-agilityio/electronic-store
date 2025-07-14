@@ -4,6 +4,7 @@ import Link, { LinkProps } from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import * as React from 'react';
 
+import { withSuspense } from '@/components/utils/with-suspense';
 import { cn } from '@/lib/utils';
 
 export type NavLinkProps = React.PropsWithChildren<LinkProps> & {
@@ -26,65 +27,7 @@ export type NavLinkProps = React.PropsWithChildren<LinkProps> & {
   defaultActiveValue?: string;
 };
 
-/**
- * Enhanced NavLink component with flexible active state determination
- *
- * Features:
- * 1. Default pathname-based active state (original behavior)
- * 2. Search param-based active state (new)
- * 3. Custom active state function (new)
- * 4. Multiple search param values support (new)
- * 5. Default value handling (new)
- *
- * Priority order:
- * 1. customIsActive function (highest priority)
- * 2. activeSearchParam + activeSearchValue/activeSearchValues + defaultActiveValue
- * 3. Default pathname matching
- *
- * @example
- * // Search param based
- * <NavLink
- *   href="?tab=products"
- *   activeSearchParam="tab"
- *   activeSearchValue="products"
- * >
- *   Products
- * </NavLink>
- *
- * @example
- * // Search param with default value
- * <NavLink
- *   href="?tab=new-arrival"
- *   activeSearchParam="tab"
- *   activeSearchValue="new-arrival"
- *   defaultActiveValue="new-arrival"
- * >
- *   New Arrival
- * </NavLink>
- *
- * @example
- * // Multiple search param values
- * <NavLink
- *   href="?category=electronics"
- *   activeSearchParam="category"
- *   activeSearchValues={["electronics", "gadgets"]}
- * >
- *   Electronics
- * </NavLink>
- *
- * @example
- * // Custom function
- * <NavLink
- *   href="?tab=products"
- *   isActive={(pathname, searchParams, href) => {
- *     return searchParams.get('tab') === 'products' &&
- *            searchParams.get('category') === 'electronics';
- *   }}
- * >
- *   Products
- * </NavLink>
- */
-export function NavLink({
+export const NavLink = withSuspense(function ({
   href,
   className,
   activeClassName,
@@ -149,4 +92,4 @@ export function NavLink({
       {children}
     </Link>
   );
-}
+});

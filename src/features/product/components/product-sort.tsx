@@ -10,8 +10,9 @@ import {
   SelectContent,
   SelectItem,
 } from '@/components/ui/select';
+import { withSuspense } from '@/components/utils/with-suspense';
 
-export function ProductSort() {
+export const ProductSort = withSuspense(function () {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -46,4 +47,4 @@ export function ProductSort() {
       </SelectContent>
     </Select>
   );
-}
+});

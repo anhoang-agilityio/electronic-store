@@ -21,6 +21,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { Slider } from '@/components/ui/slider';
+import { withSuspense } from '@/components/utils/with-suspense';
 import { useBreakpoints } from '@/hooks/use-breakpoints';
 
 // Brand type definition
@@ -138,7 +139,9 @@ type ProductFilterProps = {
   brands?: Brand[];
 };
 
-export function ProductFilter({ brands = [] }: ProductFilterProps) {
+export const ProductFilter = withSuspense(function ({
+  brands = [],
+}: ProductFilterProps) {
   const { isSmScreen, isMdScreen } = useBreakpoints();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -250,4 +253,4 @@ export function ProductFilter({ brands = [] }: ProductFilterProps) {
       />
     </aside>
   );
-}
+});
