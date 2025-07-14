@@ -18,12 +18,7 @@ export function AddAddress() {
   const addAddress = useUserStore((s) => s.addAddress);
 
   function onSubmit(data: AddressFormValues) {
-    addAddress({
-      address: data.address,
-      phone: data.phone,
-      title: data.title ?? undefined,
-      tag: data.tag ?? undefined,
-    });
+    addAddress(data);
     setOpen(false);
   }
 

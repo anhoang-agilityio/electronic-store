@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
+import { paths } from '@/config/paths';
 import { useUserStore } from '@/stores/user-store';
 import type { CartItem } from '@/types/store';
 
@@ -34,7 +35,9 @@ export function AddToCart({ product }: AddToCartProps) {
 
   const handleConfirmLogin = () => {
     setShowDialog(false);
-    router.push(`/auth/signin?callbackUrl=${encodeURIComponent(pathname)}`);
+    router.push(
+      `${paths.auth.signin.getHref()}?callbackUrl=${encodeURIComponent(pathname)}`,
+    );
   };
 
   return (
