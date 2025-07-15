@@ -1,14 +1,8 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'fdn2.gsmarena.com',
-      },
-    ],
+    remotePatterns: [new URL(process.env.NEXT_PUBLIC_API_URL ?? '')],
   },
 };
 
