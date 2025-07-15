@@ -34,7 +34,6 @@ const SignInPage = withSuspense(function () {
     formState: { errors },
   } = useForm<SignInFormValues>({
     resolver: zodResolver(SignInSchema),
-    mode: 'onTouched',
     defaultValues: {
       email: '',
       password: '',
@@ -68,13 +67,13 @@ const SignInPage = withSuspense(function () {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <main className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md bg-background rounded-xl shadow-lg p-8 space-y-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold tracking-tight mb-2">
             Sign in to your account
-          </h2>
-          <p className="text-gray-500 text-base">
+          </h1>
+          <p className="text-muted-foreground text-base">
             Please enter your email and password to continue.
           </p>
         </div>
@@ -82,7 +81,6 @@ const SignInPage = withSuspense(function () {
           className="space-y-6"
           onSubmit={(e) => void handleSubmit(onSubmit)(e)}
           autoComplete="off"
-          noValidate
         >
           <div className="space-y-4">
             <div>
@@ -144,7 +142,7 @@ const SignInPage = withSuspense(function () {
           </Button>
         </form>
       </div>
-    </div>
+    </main>
   );
 });
 

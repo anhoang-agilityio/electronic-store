@@ -35,13 +35,16 @@ export function Header() {
             <ProductSearch />
           </div>
         </div>
-        <nav className="hidden sm:flex flex-1 md:flex-initial md:gap-13 md:mx-12 items-center justify-evenly">
+        <nav
+          aria-label="Main navigation"
+          className="hidden sm:flex flex-1 md:flex-initial md:gap-13 md:mx-12 items-center justify-evenly"
+        >
           {navigationSections.public.links.map((link) => (
             <NavLink
               key={link.label}
               href={link.href}
-              className="text-muted-foreground font-medium"
-              activeClassName="text-foreground"
+              className="text-muted-foreground"
+              activeClassName="text-foreground font-bold underline"
             >
               {link.label}
             </NavLink>
@@ -52,6 +55,7 @@ export function Header() {
             <NavLink
               href={navigationSections.cart.href}
               activeClassName="text-foreground"
+              aria-label="Cart"
             >
               <navigationSections.cart.icon className="size-6" />
             </NavLink>

@@ -29,7 +29,6 @@ export function ProductTab({ tab }: ProductTabProps) {
               defaultActiveValue={TabValue.NEW_ARRIVAL}
               scroll={false}
               replace={true}
-              prefetch={false}
             >
               {tab.label}
             </NavLink>

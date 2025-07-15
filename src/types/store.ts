@@ -14,7 +14,7 @@ export type Address = {
   id: string;
   address: string;
   phone: string;
-  title?: string;
+  title: string;
   tag?: string;
 };
 

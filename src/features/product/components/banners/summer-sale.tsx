@@ -14,6 +14,7 @@ export function SummerSaleBanner() {
         fill
         className="object-cover hidden sm:block"
         priority
+        sizes="(min-width: 40rem) 100vw, 0vw"
       />
       <Image
         src="/summer-sale-mobile.png"
@@ -21,6 +22,7 @@ export function SummerSaleBanner() {
         fill
         className="object-cover block sm:hidden"
         priority
+        sizes="(max-width: 40rem) 100vw, 0vw"
       />
       {/* Overlay */}
       <div className="absolute inset-0 bg-primary/30" />

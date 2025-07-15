@@ -70,7 +70,8 @@ export default async function CategoryPage({
   const productCardInputs = data.products.map(adaptApiProductToProductCard);
 
   return (
-    <div className="relative px-10 pt-11 md:pt-6 pb-14 grid grid-cols-2 md:grid-cols-[25%_1fr_min-content] md:gap-x-8 gap-y-10 md:gap-y-6">
+    <main className="relative px-10 pt-11 md:pt-6 pb-14 grid grid-cols-2 md:grid-cols-[25%_1fr_min-content] md:gap-x-8 gap-y-10 md:gap-y-6">
+      <h1 className="sr-only">Product list by category</h1>
       {/* Filter sidebar */}
       <div className="col-start-1 md:row-span-2">
         <ProductFilter brands={brands} />
@@ -107,6 +108,6 @@ export default async function CategoryPage({
           />
         </div>
       </div>
-    </div>
+    </main>
   );
 }

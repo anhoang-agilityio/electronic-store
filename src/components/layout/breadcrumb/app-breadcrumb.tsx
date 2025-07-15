@@ -34,7 +34,7 @@ export function AppBreadcrumb() {
           <React.Fragment key={index}>
             <BreadcrumbItem>
               {item.isCurrent ? (
-                <BreadcrumbPage className="text-base font-medium">
+                <BreadcrumbPage className="text-base font-bold">
                   {item.label}
                 </BreadcrumbPage>
               ) : (

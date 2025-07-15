@@ -34,6 +34,7 @@ export function CategoryListUI({ categories }: CategoryListUIProps) {
 
   return (
     <Carousel
+      aria-labelledby="category-list-title"
       className="w-full"
       opts={{
         align: 'start',
@@ -44,7 +45,10 @@ export function CategoryListUI({ categories }: CategoryListUIProps) {
       <div className="max-w-screen-xl mx-auto px-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-semibold text-black">
+          <h2
+            id="category-list-title"
+            className="text-2xl font-semibold text-black"
+          >
             Browse By Category
           </h2>
           {/* Navigation Arrows */}
@@ -84,7 +88,7 @@ export function CategoryListUI({ categories }: CategoryListUIProps) {
                     <div className="bg-input rounded-2xl p-6 h-32 flex flex-col items-center justify-center gap-2 transition-all duration-200 hover:bg-accent">
                       <Image
                         src={category.image}
-                        alt={category.name}
+                        alt=""
                         width={48}
                         height={48}
                       />

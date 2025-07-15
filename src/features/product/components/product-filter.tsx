@@ -220,7 +220,9 @@ export const ProductFilter = withSuspense(function ({
             >
               <ChevronLeft />
             </Button>
-            <SheetTitle>Filters</SheetTitle>
+            <SheetTitle asChild>
+              <h2>Filters</h2>
+            </SheetTitle>
           </div>
           <ProductFilterPanel
             price={price}
@@ -240,7 +242,7 @@ export const ProductFilter = withSuspense(function ({
   // Desktop: show sidebar
   return (
     <aside className="hidden md:flex flex-col">
-      <div className="text-xl font-semibold mb-6">Filters</div>
+      <h2 className="text-xl font-semibold mb-6">Filters</h2>
       <ProductFilterPanel
         price={price}
         setPrice={setPrice}

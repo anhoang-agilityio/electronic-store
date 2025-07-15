@@ -27,7 +27,7 @@ export function AddressCard({ address }: AddressCardProps) {
           />
           {/* Title */}
           {address.title && (
-            <h3 className="text-lg font-semibold">{address.title}</h3>
+            <h2 className="text-lg font-semibold">{address.title}</h2>
           )}
           {/* Tag */}
           {address.tag && <Badge>{address.tag}</Badge>}

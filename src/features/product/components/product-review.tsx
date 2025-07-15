@@ -42,7 +42,7 @@ export function ProductReview({
         {/* Content */}
         <div className="flex flex-col gap-2 flex-1 min-w-0">
           {/* Title */}
-          <h4 className="text-base font-semibold">{reviewerName}</h4>
+          <h3 className="text-base font-semibold">{reviewerName}</h3>
 
           {/* Rating Stars */}
           <RatingStars rating={rating} size={20} color="#FFB646" />

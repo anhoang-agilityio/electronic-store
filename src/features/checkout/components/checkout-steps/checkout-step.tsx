@@ -22,7 +22,7 @@ export function CheckoutStep({
           'flex items-center justify-center size-6 rounded-full',
           isActive
             ? 'bg-primary text-primary-foreground'
-            : 'bg-muted-foreground text-muted',
+            : 'bg-muted-foreground/80 text-muted/80',
         )}
       >
         <Icon className="size-3" />
@@ -33,7 +33,7 @@ export function CheckoutStep({
         <span
           className={cn(
             'text-sm font-medium',
-            isActive ? 'text-primary' : 'text-muted-foreground',
+            isActive ? 'text-primary' : 'text-muted-foreground/80',
           )}
         >
           Step {stepNumber}
@@ -41,7 +41,7 @@ export function CheckoutStep({
         <span
           className={cn(
             'text-xl font-medium',
-            isActive ? 'text-primary' : 'text-muted-foreground',
+            isActive ? 'text-primary' : 'text-muted-foreground/80',
           )}
         >
           {title}

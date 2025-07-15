@@ -36,6 +36,7 @@ export const ProductSort = withSuspense(function () {
   return (
     <Select value={currentSort} onValueChange={handleSortChange}>
       <SelectTrigger
+        aria-label="Sort by"
         className="w-[164px] h-[56px] rounded-[8px] border border-[#D4D4D4] bg-white px-4 py-2 text-black text-base font-normal"
         size="default"
       >

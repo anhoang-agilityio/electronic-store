@@ -14,6 +14,7 @@ export function AirpodsMaxBanner() {
             src="/airpods-max.png"
             alt="AirPods Max Banner"
             fill
+            sizes="(min-width: 40rem) 26rem, 50rem"
             className="object-contain sm:object-cover sm:object-right"
           />
         </div>

@@ -67,7 +67,12 @@ export default async function ProductPage({
         <div className="flex flex-col md:flex-row max-w-7xl mx-auto px-4 gap-9 md:gap-8 md:justify-center md:items-center">
           {/* Product Image */}
           <div className="relative w-3/4 max-w-100 aspect-square">
-            <Image src={product.images[0] ?? ''} alt={product.name} fill />
+            <Image
+              src={product.images[0] ?? ''}
+              alt={product.name}
+              fill
+              priority
+            />
           </div>
           <div className="flex flex-col gap-8">
             <div className="flex flex-col gap-6">

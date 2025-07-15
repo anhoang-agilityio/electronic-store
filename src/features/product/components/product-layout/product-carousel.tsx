@@ -46,6 +46,7 @@ export function ProductCarousel({
 
   return (
     <Carousel
+      aria-label="Product discount"
       opts={{
         align: 'start',
         loop: false,

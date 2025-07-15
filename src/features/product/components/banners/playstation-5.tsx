@@ -14,6 +14,7 @@ export function Playstation5Banner() {
             src="/playstation-5.png"
             alt="PlayStation 5 Banner"
             fill={true}
+            sizes="(min-width: 640px) 50vw, 50rem"
             className="object-contain sm:object-cover sm:object-right"
           />
         </div>

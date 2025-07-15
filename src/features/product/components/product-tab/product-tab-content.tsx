@@ -37,19 +37,32 @@ const getProductsByTabType = async (
 type ProductGridWithDataProps = ProductTabContentProps &
   Pick<ProductGridProps, 'columns' | 'rows'>;
 
+// Error fallback UI
+function ProductGridError() {
+  return (
+    <div className="p-4 text-center text-destructive">
+      Failed to load products. Please try again later.
+    </div>
+  );
+}
+
 // Server component that fetches data based on tabType
 async function ProductGridWithData({
   tabType,
   columns,
   rows,
 }: ProductGridWithDataProps) {
-  // Fetch data based on tabType
-  const apiProducts = await getProductsByTabType(tabType);
+  try {
+    // Fetch data based on tabType
+    const apiProducts = await getProductsByTabType(tabType);
 
-  // Convert API products to ProductList format
-  const products = apiProducts.map(adaptApiProductToProductCard);
+    // Convert API products to ProductList format
+    const products = apiProducts.map(adaptApiProductToProductCard);
 
-  return <ProductGrid products={products} columns={columns} rows={rows} />;
+    return <ProductGrid products={products} columns={columns} rows={rows} />;
+  } catch {
+    return <ProductGridError />;
+  }
 }
 
 export function ProductTabContent({ tabType }: ProductTabContentProps) {

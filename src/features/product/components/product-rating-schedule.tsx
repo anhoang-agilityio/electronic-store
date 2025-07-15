@@ -50,9 +50,15 @@ export function ProductRatingSchedule({
     <div className="flex flex-col gap-4 w-full product-rating-schedule-root">
       {levels.map((level) => (
         <div key={level.label} className="flex items-center gap-4 w-full">
-          <span className="w-[150px] text-sm">{level.label}</span>
+          <span id={level.label} className="w-[150px] text-sm">
+            {level.label}
+          </span>
           <div className="flex-1">
-            <Progress value={level.percent} className="h-[5px]" />
+            <Progress
+              aria-labelledby={level.label}
+              value={level.percent}
+              className="h-[5px]"
+            />
           </div>
           <span className="w-7 text-sm text-right">{level.value}</span>
         </div>

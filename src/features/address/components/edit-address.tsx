@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -40,6 +41,9 @@ export function EditAddress({ address }: { address: Address }) {
           <DialogHeader>
             <DialogTitle>Edit Address</DialogTitle>
           </DialogHeader>
+          <DialogDescription className="sr-only">
+            Edit address form
+          </DialogDescription>
           <AddressForm
             initialValues={address}
             onSubmit={handleEditSubmit}

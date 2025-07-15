@@ -25,13 +25,14 @@ export function UserAddressList() {
   if (!addresses.length) {
     return (
       <div className="py-8 text-center text-muted-foreground">
+        <h1 className="sr-only">No address found</h1>
         No address found. Please add a new address.
       </div>
     );
   }
 
   return (
-    <div className="space-y-8">
+    <section className="space-y-8">
       <h1 className="text-xl font-semibold">Select Address</h1>
       <RadioGroup
         value={selectedId}
@@ -46,6 +47,6 @@ export function UserAddressList() {
           <AddressCard key={address.id} address={address} />
         ))}
       </RadioGroup>
-    </div>
+    </section>
   );
 }

@@ -15,15 +15,30 @@ type ProductCarouselWithDataProps = Pick<
   'columns' | 'rows'
 >;
 
+// Error fallback UI
+function ProductCarouselError() {
+  return (
+    <div className="p-4 text-center text-destructive">
+      Failed to load discounted products. Please try again later.
+    </div>
+  );
+}
+
 async function ProductCarouselWithData({
   columns,
   rows,
 }: ProductCarouselWithDataProps) {
-  const apiProducts = await getDiscountedProducts({ limit: 8 });
+  try {
+    const apiProducts = await getDiscountedProducts({ limit: 8 });
 
-  const products = apiProducts.map(adaptApiProductToProductCard);
+    const products = apiProducts.map(adaptApiProductToProductCard);
 
-  return <ProductCarousel products={products} columns={columns} rows={rows} />;
+    return (
+      <ProductCarousel products={products} columns={columns} rows={rows} />
+    );
+  } catch {
+    return <ProductCarouselError />;
+  }
 }
 
 export function ProductDiscount() {

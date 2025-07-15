@@ -29,7 +29,7 @@ export function UserMenu() {
 
   if (!session?.user) {
     return (
-      <Button variant="ghost" size="icon-circle" asChild>
+      <Button title="Sign in" variant="ghost" size="icon-circle" asChild>
         <Link href={paths.auth.signin.getHref()}>
           <User className="size-6" />
         </Link>
@@ -43,7 +43,12 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon-circle" className="relative">
+        <Button
+          aria-label="User menu"
+          variant="ghost"
+          size="icon-circle"
+          className="relative"
+        >
           <Avatar className="size-8">
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>

@@ -1,4 +1,8 @@
+import Link from 'next/dist/client/link';
 import Image from 'next/image';
+
+import { Button } from '@/components/ui/button';
+import { paths } from '@/config/paths';
 
 export function VisionProBanner() {
   return (
@@ -10,16 +14,30 @@ export function VisionProBanner() {
             src="/vision-pro.png"
             alt="Vision Pro Banner"
             fill={true}
+            sizes="(min-width: 40rem) 136px, 325px"
             className="object-contain sm:object-cover sm:object-right"
           />
         </div>
         {/* Title + Description */}
         <div className="flex flex-col gap-4 max-w-xl text-center sm:text-left">
-          <h1 className="text-primary-foreground text-4xl sm:text-3xl">
-            <span className="font-light">Vision </span>
-            <span className="font-medium">Pro</span>
-          </h1>
-          <p className="text-muted-foreground text-base sm:text-sm font-medium">
+          <Button
+            variant="link"
+            asChild
+            className="p-0 justify-start text-primary-foreground"
+          >
+            <Link
+              href={paths
+                .category('vision')
+                .product('apple-vision-pro')
+                .getHref()}
+            >
+              <h1 className="text-4xl sm:text-3xl">
+                <span className="font-light">Vision </span>
+                <span className="font-medium">Pro</span>
+              </h1>
+            </Link>
+          </Button>
+          <p className="text-secondary/70 text-base sm:text-sm font-medium">
             An immersive way to experience entertainment
           </p>
         </div>

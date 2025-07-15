@@ -8,6 +8,7 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
+  DrawerDescription,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -59,15 +60,24 @@ export function MobileNavigationDrawer() {
   return (
     <Drawer open={open} onOpenChange={setOpen} direction="right">
       <DrawerTrigger asChild>
-        <Button variant="ghost" size="icon-circle">
+        <Button aria-label="Open menu" variant="ghost" size="icon-circle">
           <Menu className="size-6" />
         </Button>
       </DrawerTrigger>
       <DrawerContent>
+        <DrawerDescription className="sr-only">
+          Mobile navigation drawer
+        </DrawerDescription>
+
         <DrawerHeader className="flex flex-row items-center justify-between">
           <DrawerTitle>Menu</DrawerTitle>
           <DrawerClose asChild>
-            <Button variant="ghost" size="icon-circle" className="size-8">
+            <Button
+              aria-label="Close menu"
+              variant="ghost"
+              size="icon-circle"
+              className="size-8"
+            >
               <X className="size-4" />
             </Button>
           </DrawerClose>

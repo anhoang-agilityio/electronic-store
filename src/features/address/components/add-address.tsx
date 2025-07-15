@@ -6,6 +6,7 @@ import * as React from 'react';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -50,6 +51,9 @@ export function AddAddress() {
           <DialogHeader>
             <DialogTitle>Add New Address</DialogTitle>
           </DialogHeader>
+          <DialogDescription className="sr-only">
+            Add new address form
+          </DialogDescription>
           <AddressForm
             onSubmit={onSubmit}
             onCancel={() => {

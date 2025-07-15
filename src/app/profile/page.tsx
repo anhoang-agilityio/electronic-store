@@ -11,27 +11,27 @@ export default function ProfilePage() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-lg">Loading...</div>
-      </div>
+      <main className="min-h-screen flex items-center justify-center">
+        <h1 className="text-lg">Loading...</h1>
+      </main>
     );
   }
 
   if (!session) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <main className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Not authenticated</h1>
           <Button asChild>
             <Link href={paths.auth.signin.getHref()}>Sign in</Link>
           </Button>
         </div>
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    <main className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold mb-8">Profile</h1>
@@ -67,6 +67,6 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

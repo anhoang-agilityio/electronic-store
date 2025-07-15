@@ -21,9 +21,7 @@ export function ProductSearch() {
   const [open, setOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const { searchResults, isPending, search } = useSearchProduct({
-    pageSize: 10,
-  });
+  const { searchResults, isPending, search } = useSearchProduct();
 
   const router = useRouter();
 

@@ -40,7 +40,7 @@ export function Footer() {
         {/* Logo + Description */}
         <div className="flex flex-col gap-6 items-center md:items-start md:max-w-100">
           <Image src="/logo-light.svg" alt="Logo" width={65} height={23} />
-          <p className="text-muted-foreground text-sm font-medium">
+          <p className="text-secondary/60 text-sm font-medium">
             We are a residential interior design firm located in Portland. Our
             boutique-studio offers more than just a place to shop.
           </p>
@@ -55,7 +55,7 @@ export function Footer() {
             {section.items.map((item) => (
               <span
                 key={item}
-                className="text-muted-foreground text-sm/8 cursor-pointer hover:underline"
+                className="text-secondary/60 text-sm/8 cursor-pointer hover:underline"
               >
                 {item}
               </span>

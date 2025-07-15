@@ -20,7 +20,7 @@ export function Iphone14ProBanner() {
                 <span className="font-semibold">Pro</span>
               </h1>
             </div>
-            <p className="text-muted-foreground text-lg max-w-lg">
+            <p className="text-secondary/60 text-lg max-w-lg">
               Created to change everything for the better. For everyone
             </p>
           </div>
@@ -45,6 +45,8 @@ export function Iphone14ProBanner() {
               alt="iPhone 14 Pro Banner"
               className="object-cover object-top-left"
               fill
+              sizes="30vw"
+              priority
             />
           </div>
         </div>

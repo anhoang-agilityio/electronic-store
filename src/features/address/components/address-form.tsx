@@ -11,9 +11,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 const addressSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
   address: z.string().min(1, 'Address is required'),
   phone: z.string().min(1, 'Phone is required'),
-  title: z.string().optional(),
   tag: z.string().optional(),
 });
 
@@ -39,16 +39,34 @@ export function AddressForm({
   } = useForm<AddressFormValues>({
     resolver: zodResolver(addressSchema),
     defaultValues: initialValues ?? {
+      title: '',
       address: '',
       phone: '',
-      title: '',
       tag: '',
     },
   });
 
   return (
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form
+      onSubmit={(e) => void handleSubmit(onSubmit)(e)}
+      className="space-y-4"
+    >
+      <div>
+        <Label htmlFor="title" className="mb-1">
+          Title
+          <span className="text-destructive">*</span>
+        </Label>
+        <Input
+          id="title"
+          {...register('title')}
+          placeholder="e.g. Home, Office"
+        />
+        {errors.title && (
+          <p className="text-xs text-destructive mt-1">
+            {errors.title.message}
+          </p>
+        )}
+      </div>
       <div>
         <Label htmlFor="address" className="mb-1">
           Address
@@ -78,21 +96,6 @@ export function AddressForm({
         {errors.phone && (
           <p className="text-xs text-destructive mt-1">
             {errors.phone.message}
-          </p>
-        )}
-      </div>
-      <div>
-        <Label htmlFor="title" className="mb-1">
-          Title
-        </Label>
-        <Input
-          id="title"
-          {...register('title')}
-          placeholder="e.g. Home, Office"
-        />
-        {errors.title && (
-          <p className="text-xs text-destructive mt-1">
-            {errors.title.message}
           </p>
         )}
       </div>
