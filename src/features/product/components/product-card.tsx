@@ -29,7 +29,7 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="size-full bg-card text-card-foreground rounded-md pt-13 pb-4 px-6 shadow-sm relative">
+    <div className="w-full bg-card text-card-foreground rounded-md pt-13 pb-4 px-6 shadow-sm relative">
       {/* Like Button */}
       <Button
         aria-label="Favorite product"

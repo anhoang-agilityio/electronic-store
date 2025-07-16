@@ -104,7 +104,7 @@ export function CheckoutPaymentPanel() {
             </div>
           </div>
         </form>
-        {/* Step Actions (Buttons) */}
+        {/* Step Actions */}
         <div className="mt-8">
           <StepActions
             currentStep={3}

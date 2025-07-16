@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
@@ -52,6 +53,9 @@ const SignInPage = withSuspense(function () {
       if (result?.error) {
         setServerError('Invalid email or password.');
       } else {
+        toast.success('Sign in successful!', {
+          description: 'Welcome back!',
+        });
         router.push(callbackUrl);
         router.refresh();
       }

@@ -1,47 +1,31 @@
-import {
-  Home,
-  HelpCircle,
-  Mail,
-  FileText,
-  Heart,
-  ShoppingCart,
-} from 'lucide-react';
+import { Home, HelpCircle, Mail, FileText } from 'lucide-react';
+
+import { paths } from '@/config/paths';
 
 export const navigationSections = {
   public: {
     title: 'Menu',
     links: [
       {
-        href: '/',
+        href: paths.home.getHref(),
         icon: Home,
         label: 'Home',
       },
       {
-        href: '/about',
+        href: paths.about.getHref(),
         icon: HelpCircle,
         label: 'About',
       },
       {
-        href: '/contact',
+        href: paths.contact.getHref(),
         icon: Mail,
         label: 'Contact Us',
       },
       {
-        href: '/blog',
+        href: paths.blog.getHref(),
         icon: FileText,
         label: 'Blog',
       },
     ],
-  },
-  cart: {
-    href: '/cart',
-    icon: ShoppingCart,
-    label: 'Cart',
-  },
-  favorites: {
-    href: '/favorites',
-    icon: Heart,
-    label: 'Favorites',
-    disabled: true,
   },
 };

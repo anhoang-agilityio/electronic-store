@@ -2,6 +2,15 @@ export const paths = {
   home: {
     getHref: () => '/',
   },
+  about: {
+    getHref: () => '/about',
+  },
+  contact: {
+    getHref: () => '/contact',
+  },
+  blog: {
+    getHref: () => '/blog',
+  },
   cart: {
     getHref: () => '/cart',
   },

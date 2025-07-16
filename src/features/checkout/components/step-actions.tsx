@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
@@ -69,6 +70,7 @@ export function StepActions({ currentStep, onPaySubmit }: StepActionsProps) {
       clearCart();
       setPayLoading(false);
       setConfirmOpen(false);
+      toast.success('Payment successful!');
       router.push(paths.home.getHref());
     }, 600); // Simulate processing
   }

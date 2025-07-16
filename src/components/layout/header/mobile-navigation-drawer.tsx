@@ -1,6 +1,6 @@
 'use client';
 
-import { X, Menu } from 'lucide-react';
+import { X, Menu, ShoppingCart, Heart } from 'lucide-react';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,7 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer';
 import { NavLink } from '@/components/ui/nav-link';
+import { paths } from '@/config/paths';
 
 import { navigationSections } from './config';
 import { UserMenuMobile } from './user-menu-mobile';
@@ -107,11 +108,11 @@ export function MobileNavigationDrawer() {
                 onClick={() => setOpen(false)}
               >
                 <NavLink
-                  href={navigationSections.cart.href}
+                  href={paths.cart.getHref()}
                   activeClassName="bg-accent"
                 >
-                  <navigationSections.cart.icon className="size-5" />
-                  {navigationSections.cart.label}
+                  <ShoppingCart className="size-5" />
+                  Cart
                 </NavLink>
               </Button>
               <Button
@@ -120,8 +121,8 @@ export function MobileNavigationDrawer() {
                 disabled
                 title="Favorites is disabled"
               >
-                <navigationSections.favorites.icon className="size-5" />
-                {navigationSections.favorites.label}
+                <Heart className="size-5" />
+                Favorites
               </Button>
             </div>
           </div>

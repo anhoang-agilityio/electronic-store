@@ -20,7 +20,7 @@ export function Playstation5Banner() {
         </div>
         {/* Title + Description */}
         <div className="flex flex-col gap-2 sm:gap-6 max-w-xl sm:mr-12 text-center sm:text-left">
-          <Button asChild variant="link" className="self-start p-0">
+          <Button asChild variant="link" className="sm:self-start p-0">
             <Link
               href={paths
                 .category('gaming')

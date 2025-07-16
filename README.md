@@ -97,5 +97,4 @@ src/
 - `build` – Build for production
 - `start` – Start production server
 - `lint` – Run ESLint
-- `test` – Run tests (if available)
 

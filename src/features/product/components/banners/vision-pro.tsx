@@ -19,7 +19,7 @@ export function VisionProBanner() {
           />
         </div>
         {/* Title + Description */}
-        <div className="flex flex-col gap-4 max-w-xl text-center sm:text-left">
+        <div className="flex flex-col gap-4 max-w-xl items-center sm:items-stretch text-center sm:text-left">
           <Button
             variant="link"
             asChild

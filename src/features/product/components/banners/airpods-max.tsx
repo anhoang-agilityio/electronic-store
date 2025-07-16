@@ -20,7 +20,11 @@ export function AirpodsMaxBanner() {
         </div>
         {/* Title + Description */}
         <div className="flex flex-col gap-4 max-w-xl text-center sm:text-left">
-          <Button variant="link" asChild className="whitespace-normal p-0">
+          <Button
+            variant="link"
+            asChild
+            className="sm:self-start whitespace-normal p-0"
+          >
             <Link
               href={paths
                 .category('headphone')

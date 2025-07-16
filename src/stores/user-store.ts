@@ -368,16 +368,19 @@ export const useUserStore = create<UserStore>()(
 
 // Selectors
 export const useCurrentUserCart = () => {
-  const { currentUserId, userData } = useUserStore();
+  const currentUserId = useUserStore((s) => s.currentUserId);
+  const userData = useUserStore((s) => s.userData);
   return currentUserId ? (userData[currentUserId]?.cart ?? []) : [];
 };
 
 export const useCurrentUserAddresses = () => {
-  const { currentUserId, userData } = useUserStore();
+  const currentUserId = useUserStore((s) => s.currentUserId);
+  const userData = useUserStore((s) => s.userData);
   return currentUserId ? (userData[currentUserId]?.addresses ?? []) : [];
 };
 
 export const useCurrentCheckout = () => {
-  const { currentUserId, userData } = useUserStore();
+  const currentUserId = useUserStore((s) => s.currentUserId);
+  const userData = useUserStore((s) => s.userData);
   return currentUserId ? (userData[currentUserId]?.checkout ?? null) : null;
 };

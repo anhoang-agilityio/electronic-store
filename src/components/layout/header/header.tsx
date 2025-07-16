@@ -1,5 +1,4 @@
-'use client';
-
+import { ShoppingCart, Heart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -53,11 +52,11 @@ export function Header() {
         <div className="hidden sm:flex items-center gap-2">
           <Button variant="ghost" size="icon-circle" asChild>
             <NavLink
-              href={navigationSections.cart.href}
-              activeClassName="text-foreground"
+              href={paths.cart.getHref()}
+              activeClassName="bg-accent text-accent-foreground"
               aria-label="Cart"
             >
-              <navigationSections.cart.icon className="size-6" />
+              <ShoppingCart className="size-6" />
             </NavLink>
           </Button>
           <Button
@@ -66,7 +65,7 @@ export function Header() {
             disabled
             title="Favorites is disabled"
           >
-            <navigationSections.favorites.icon className="size-6 opacity-40" />
+            <Heart className="size-6 opacity-40" />
           </Button>
           <UserMenu />
         </div>
