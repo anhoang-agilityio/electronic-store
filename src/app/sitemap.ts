@@ -57,6 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           if (response.products.length < PAGE_SIZE) break;
         }
       } catch {
+        // Fetch error, continue to next page
         continue;
       }
     } while ((page - 1) * PAGE_SIZE < total);

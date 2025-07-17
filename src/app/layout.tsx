@@ -6,7 +6,6 @@ import { Header } from '@/components/layout/header/header';
 import { Providers } from '@/components/providers/session-provider';
 import { Toaster } from '@/components/ui/sonner';
 import { AuthStoreSyncer } from '@/components/utils/auth-store-syncer';
-import { AxeDevtools } from '@/components/utils/axe';
 import { env } from '@/config/env';
 import { inter } from '@/styles/fonts';
 
@@ -28,7 +27,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
-        <AxeDevtools />
         <Providers>
           <AuthStoreSyncer />
           <Header />
