@@ -2,11 +2,13 @@
 
 A modern, full-featured e-commerce web application for electronics, built with Next.js 15, ReactJS 19 and TypeScript.
 
+🌐 **Live Demo:** [https://electronic-store.vercel.app/](https://electronic-store.vercel.app/)
+
 ## Features
 
 - 🛒 Product catalog with categories, filters, and search
 - 📦 Shopping cart and multi-step checkout flow
-- 🔐 Authentication (NextAuth.js)
+- 🔐 Authentication (Auth.js)
 - 🧑 User profile and address management
 - 💳 Payment and shipment method selection
 - 📱 Responsive design for all devices
@@ -19,7 +21,7 @@ A modern, full-featured e-commerce web application for electronics, built with N
 - [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Shadcn/UI](https://ui.shadcn.com/)
-- [NextAuth.js](https://next-auth.js.org/)
+- [Auth.js](https://authjs.dev/)
 - [Zustand](https://zustand.docs.pmnd.rs/)
 - [React Hook Form](https://react-hook-form.com/)
 
@@ -42,7 +44,7 @@ A modern, full-featured e-commerce web application for electronics, built with N
 3. **Configuration:**
 
    - Environment variables can be set in `.env.local`.
-   - The app expects a running API backend (see `electronic-store-api` repo).
+   - The app expects a running API backend (see [`electronic-store-api`](https://github.com/anhoang-agilityio/electronic-store-api) repo).
 
    **Required Environment Variables:**
 

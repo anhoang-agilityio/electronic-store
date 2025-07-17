@@ -13,16 +13,14 @@ export function SummerSaleBanner() {
         alt="Summer Sale Background"
         fill
         className="object-cover hidden sm:block"
-        priority
-        sizes="(min-width: 40rem) 100vw, 0vw"
+        sizes="(min-width: 640px) 100vw, 0vw"
       />
       <Image
         src="/summer-sale-mobile.png"
         alt="Summer Sale Mobile Background"
         fill
         className="object-cover block sm:hidden"
-        priority
-        sizes="(max-width: 40rem) 100vw, 0vw"
+        sizes="(max-width: 640px) 100vw, 0vw"
       />
       {/* Overlay */}
       <div className="absolute inset-0 bg-primary/30" />

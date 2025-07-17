@@ -14,7 +14,7 @@ export function VisionProBanner() {
             src="/vision-pro.png"
             alt="Vision Pro Banner"
             fill={true}
-            sizes="(min-width: 40rem) 136px, 325px"
+            sizes="(max-width: 640px) 325px, 136px"
             className="object-contain sm:object-cover sm:object-right"
           />
         </div>

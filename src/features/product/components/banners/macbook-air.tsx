@@ -40,7 +40,7 @@ export function MacbookAirBanner() {
             src="/macbook-air.png"
             alt="MacBook Air Banner"
             className="object-contain sm:object-cover sm:object-left"
-            sizes="(min-width: 640px) 50vw, 75vw"
+            sizes="(max-width: 640px) 75vw, 50vw"
             fill
           />
         </div>

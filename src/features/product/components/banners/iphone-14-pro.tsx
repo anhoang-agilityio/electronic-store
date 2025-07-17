@@ -45,7 +45,7 @@ export function Iphone14ProBanner() {
               alt="iPhone 14 Pro Banner"
               className="object-cover object-top-left"
               fill
-              sizes="30vw"
+              sizes="(max-width: 640px) 321px, 406px"
               priority
             />
           </div>
