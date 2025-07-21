@@ -14,8 +14,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { paths } from '@/config/paths';
-
-import { useSearchProduct } from '../hooks';
+import { useSearchProduct } from '@/features/product/hooks/use-search-product';
 
 export function ProductSearch() {
   const [open, setOpen] = React.useState(false);
