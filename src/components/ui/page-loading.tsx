@@ -2,7 +2,7 @@ import React from 'react';
 
 export function PageLoading() {
   return (
-    <div className="absolute min-h-[60vh] inset-0 z-50 flex items-center justify-center bg-background">
+    <div className="flex items-center justify-center min-h-[80vh] w-full bg-background ">
       {/* SVG spinner */}
       <svg
         className="animate-spin"
