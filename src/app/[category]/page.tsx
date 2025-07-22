@@ -3,7 +3,7 @@ import React from 'react';
 
 import { getBrands, getProducts, getCategories } from '@/api/api-client';
 import { ProductFilter } from '@/features/product/components/product-filter';
-import { ProductGrid } from '@/features/product/components/product-layout/product-grid';
+import { ProductGrid } from '@/features/product/components/product-layout';
 import { ProductSort } from '@/features/product/components/product-sort';
 import { adaptApiProductToProductCard } from '@/features/product/utils/dto';
 import { Sort } from '@/types/api';

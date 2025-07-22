@@ -47,6 +47,7 @@ export function ProductCard({ product }: ProductCardProps) {
             src={product.image}
             alt={product.name}
             fill
+            sizes="160px"
             className="object-contain"
           />
         </div>

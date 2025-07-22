@@ -70,6 +70,7 @@ export default async function ProductPage({
             <Image
               src={product.images[0] ?? ''}
               alt={product.name}
+              sizes="400px"
               fill
               priority
             />
