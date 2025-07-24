@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { searchProducts } from '@/api/api-client';
+import { searchProducts } from '@/features/product/api/search-products';
 import type { SearchParams, Product } from '@/types/api';
 
 export type UseSearchProductOptions = {

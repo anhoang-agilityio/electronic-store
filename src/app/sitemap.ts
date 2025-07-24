@@ -1,7 +1,8 @@
 import type { MetadataRoute } from 'next';
 
-import { getCategories, getProducts } from '@/api/api-client';
 import { env } from '@/config/env';
+import { getCategories } from '@/features/category/api/get-categories';
+import { getProducts } from '@/features/product/api/get-products';
 import { Category } from '@/types/api';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

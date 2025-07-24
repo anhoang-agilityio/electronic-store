@@ -1,9 +1,7 @@
+import { api, buildUrlWithParams } from '@/lib/api-client';
 import type {
   ProductListParams,
-  BrandListParams,
   Product,
-  Category,
-  Brand,
   ProductListResponse,
   FeaturedProductParams,
   BestsellerProductParams,
@@ -12,8 +10,6 @@ import type {
   SearchParams,
   SearchResponse,
 } from '@/types/api';
-
-import { api, buildUrlWithParams } from './utils';
 
 // Products
 export async function getProducts(
@@ -73,19 +69,4 @@ export async function searchProducts(
 ) {
   const url = buildUrlWithParams('api/search', params);
   return await api.get<SearchResponse>(url, options);
-}
-
-// Categories
-export async function getCategories(options?: RequestInit) {
-  const url = buildUrlWithParams('api/categories');
-  return await api.get<Category[]>(url, options);
-}
-
-// Brands
-export async function getBrands(
-  params?: BrandListParams,
-  options?: RequestInit,
-) {
-  const url = buildUrlWithParams('api/brands', params);
-  return await api.get<Brand[]>(url, options);
 }

@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 
-import { getRelatedProducts } from '@/api/api-client';
+import { getRelatedProducts } from '@/features/product/api/get-related-products';
 import { adaptApiProductToProductCard } from '@/features/product/utils/dto';
 
 import {

@@ -1,10 +1,8 @@
 import React, { Suspense } from 'react';
 
-import {
-  getBestsellers,
-  getNewArrivals,
-  getFeaturedProducts,
-} from '@/api/api-client';
+import { getBestsellers } from '@/features/product/api/get-bestsellers';
+import { getFeaturedProducts } from '@/features/product/api/get-featured-products';
+import { getNewArrivals } from '@/features/product/api/get-new-arrivals';
 import type { Product as ApiProduct } from '@/types/api';
 
 import { adaptApiProductToProductCard } from '../../utils/dto';

@@ -1,18 +1,31 @@
 import { BadgeCheck, House, Truck } from 'lucide-react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import { notFound } from 'next/navigation';
 
-import { getProduct } from '@/api/api-client';
 import { Button } from '@/components/ui/button';
 import { AddToCart } from '@/features/cart/components/add-to-cart';
+import { getProduct } from '@/features/product/api/get-product';
 import { ProductDetail } from '@/features/product/components/product-detail';
 import { ProductFeature } from '@/features/product/components/product-feature';
 import { ProductRating } from '@/features/product/components/product-rating';
 import { ProductRatingSchedule } from '@/features/product/components/product-rating-schedule';
 import { ProductRelated } from '@/features/product/components/product-related';
 import { ProductReview } from '@/features/product/components/product-review';
+import { ApiError } from '@/lib/api-client';
 import { getDiscountedPrice } from '@/utils/price';
 import { snakeToTitleCase } from '@/utils/string';
+
+async function fetchProductOrNotFound(productId: string) {
+  try {
+    return await getProduct(productId);
+  } catch (error: unknown) {
+    if (error instanceof ApiError && error.status === 404) {
+      notFound();
+    }
+    throw error;
+  }
+}
 
 export async function generateMetadata({
   params,
@@ -20,7 +33,7 @@ export async function generateMetadata({
   params: Promise<{ product: string }>;
 }): Promise<Metadata> {
   const productId = (await params).product;
-  const product = await getProduct(productId);
+  const product = await fetchProductOrNotFound(productId);
 
   return {
     title: product.name,
@@ -59,7 +72,7 @@ export default async function ProductPage({
   params: Promise<{ product: string }>;
 }) {
   const productId = (await params).product;
-  const product = await getProduct(productId);
+  const product = await fetchProductOrNotFound(productId);
 
   return (
     <main className="bg-muted">

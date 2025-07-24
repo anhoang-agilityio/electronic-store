@@ -1,12 +1,29 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import React from 'react';
 
-import { getBrands, getProducts, getCategories } from '@/api/api-client';
+import { getBrands } from '@/features/brand/api/get-brands';
+import { getCategory } from '@/features/category/api/get-category';
+import { getProducts } from '@/features/product/api/get-products';
 import { ProductFilter } from '@/features/product/components/product-filter';
 import { ProductGrid } from '@/features/product/components/product-layout';
 import { ProductSort } from '@/features/product/components/product-sort';
 import { adaptApiProductToProductCard } from '@/features/product/utils/dto';
+import { ApiError } from '@/lib/api-client';
 import { Sort } from '@/types/api';
+
+async function fetchCategoryOrNotFound(categoryId: string) {
+  try {
+    const category = await getCategory(categoryId);
+    if (!category) notFound();
+    return category;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) {
+      notFound();
+    }
+    throw error;
+  }
+}
 
 export async function generateMetadata({
   params,
@@ -14,9 +31,8 @@ export async function generateMetadata({
   params: Promise<{ category: string }>;
 }): Promise<Metadata> {
   const category = (await params).category;
-  const categories = await getCategories();
-  const categoryObj = categories.find((c) => c.id === category);
-  const categoryName = categoryObj?.name ?? 'Category';
+  const categoryObj = await fetchCategoryOrNotFound(category);
+  const categoryName = categoryObj.name;
 
   return {
     title: categoryName,
@@ -40,6 +56,8 @@ export default async function CategoryPage({
   searchParams,
 }: CategoryPageProps) {
   const category = (await params).category;
+  await fetchCategoryOrNotFound(category);
+
   const page = parseInt((await searchParams).page ?? '1', 10);
   const minPrice = parseInt((await searchParams).minPrice ?? '0', 10);
   const maxPrice = parseInt((await searchParams).maxPrice ?? '12999', 10);

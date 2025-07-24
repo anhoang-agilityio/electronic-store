@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 
-import { getCategories } from '@/api/api-client';
+import { getCategories } from '@/features/category/api/get-categories';
 
 import { CategoryListSkeleton } from './category-list-skeleton';
 import { CategoryListUI } from './category-list-ui';
