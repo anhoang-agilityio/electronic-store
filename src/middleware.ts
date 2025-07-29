@@ -6,11 +6,19 @@ export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
 
-  // Protected routes
+  const authRoutes = ['/auth/signin'];
   const protectedRoutes = ['/cart', '/checkout'];
+
+  const isAuthRoute = authRoutes.some((route) =>
+    nextUrl.pathname.startsWith(route),
+  );
   const isProtectedRoute = protectedRoutes.some((route) =>
     nextUrl.pathname.startsWith(route),
   );
+
+  if (isAuthRoute && isLoggedIn) {
+    return NextResponse.redirect(new URL('/', nextUrl.origin));
+  }
 
   if (isProtectedRoute && !isLoggedIn) {
     // Redirect to sign-in page if trying to access protected route without authentication
