@@ -1,6 +1,6 @@
 import { type Metadata } from 'next';
 
-import { CategoryList } from '@/features/category/components/category-list/category-list';
+import { CategoryList } from '@/features/category/components/category-list';
 import { AirpodsMaxBanner } from '@/features/product/components/banners/airpods-max';
 import { Iphone14ProBanner } from '@/features/product/components/banners/iphone-14-pro';
 import { MacbookAirBanner } from '@/features/product/components/banners/macbook-air';

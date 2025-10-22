@@ -69,7 +69,6 @@ export function MobileNavigationDrawer() {
         <DrawerDescription className="sr-only">
           Mobile navigation drawer
         </DrawerDescription>
-
         <DrawerHeader className="flex flex-row items-center justify-between">
           <DrawerTitle>Menu</DrawerTitle>
           <DrawerClose asChild>

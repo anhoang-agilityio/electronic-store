@@ -6,25 +6,28 @@ export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
 
-  const authRoutes = ['/auth/signin'];
   const protectedRoutes = ['/cart', '/checkout'];
+  const guestRoutes = ['/auth/signin'];
 
-  const isAuthRoute = authRoutes.some((route) =>
-    nextUrl.pathname.startsWith(route),
-  );
   const isProtectedRoute = protectedRoutes.some((route) =>
     nextUrl.pathname.startsWith(route),
   );
 
-  if (isAuthRoute && isLoggedIn) {
-    return NextResponse.redirect(new URL('/', nextUrl.origin));
-  }
+  const isGuestRoute = guestRoutes.some((route) =>
+    nextUrl.pathname.startsWith(route),
+  );
 
+  // Block access to protected routes if not logged in
   if (isProtectedRoute && !isLoggedIn) {
     // Redirect to sign-in page if trying to access protected route without authentication
     const signInUrl = new URL('/auth/signin', nextUrl.origin);
     signInUrl.searchParams.set('callbackUrl', nextUrl.pathname);
     return NextResponse.redirect(signInUrl);
+  }
+
+  // Block access to authenticated blocked routes if already logged in
+  if (isGuestRoute && isLoggedIn) {
+    return NextResponse.redirect(new URL('/', nextUrl.origin));
   }
 
   return NextResponse.next();
