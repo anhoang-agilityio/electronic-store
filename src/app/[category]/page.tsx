@@ -1,3 +1,4 @@
+import { Effect } from 'effect';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import React from 'react';
@@ -9,20 +10,20 @@ import { ProductFilter } from '@/features/product/components/product-filter';
 import { ProductGrid } from '@/features/product/components/product-layout';
 import { ProductSort } from '@/features/product/components/product-sort';
 import { adaptApiProductToProductCard } from '@/features/product/utils/dto';
-import { ApiError } from '@/lib/api-client';
 import { Sort } from '@/types/api';
 
 async function fetchCategoryOrNotFound(categoryId: string) {
-  try {
-    const category = await getCategory(categoryId);
-    if (!category) notFound();
-    return category;
-  } catch (error) {
-    if (error instanceof ApiError && error.status === 404) {
-      notFound();
-    }
-    throw error;
+  const category = await Effect.runPromise(
+    getCategory(categoryId).pipe(
+      Effect.catchTag('CategoryNotFoundError', () => Effect.succeed(null)),
+    ),
+  );
+
+  if (category === null) {
+    notFound();
   }
+
+  return category;
 }
 
 export async function generateMetadata({
@@ -65,25 +66,29 @@ export default async function CategoryPage({
   const sort = (await searchParams).sort;
   const pageSize = 12;
 
-  // Fetch brands for filter
-  const brandsRaw = await getBrands({ category });
+  const { brandsRaw, data } = await Effect.runPromise(
+    Effect.all(
+      {
+        brandsRaw: getBrands({ category }),
+        data: getProducts({
+          category,
+          page,
+          pageSize,
+          minPrice,
+          maxPrice,
+          brands: filterBrands,
+          sort,
+        }),
+      },
+      { concurrency: 'unbounded' },
+    ),
+  );
 
   // Map API brands to filter brands
   const brands = brandsRaw.map((b) => ({
     brandId: b.id,
     brandName: b.name,
   }));
-
-  // Fetch products for this category
-  const data = await getProducts({
-    category,
-    page,
-    pageSize,
-    minPrice,
-    maxPrice,
-    brands: filterBrands,
-    sort,
-  });
 
   const productCardInputs = data.products.map(adaptApiProductToProductCard);
 

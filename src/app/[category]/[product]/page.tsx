@@ -1,3 +1,4 @@
+import { Effect } from 'effect';
 import { BadgeCheck, House, Truck } from 'lucide-react';
 import type { Metadata } from 'next';
 import Image from 'next/image';
@@ -12,19 +13,21 @@ import { ProductRating } from '@/features/product/components/product-rating';
 import { ProductRatingSchedule } from '@/features/product/components/product-rating-schedule';
 import { ProductRelated } from '@/features/product/components/product-related';
 import { ProductReview } from '@/features/product/components/product-review';
-import { ApiError } from '@/lib/api-client';
 import { getDiscountedPrice } from '@/utils/price';
 import { snakeToTitleCase } from '@/utils/string';
 
 async function fetchProductOrNotFound(productId: string) {
-  try {
-    return await getProduct(productId);
-  } catch (error: unknown) {
-    if (error instanceof ApiError && error.status === 404) {
-      notFound();
-    }
-    throw error;
+  const product = await Effect.runPromise(
+    getProduct(productId).pipe(
+      Effect.catchTag('ProductNotFoundError', () => Effect.succeed(null)),
+    ),
+  );
+
+  if (product === null) {
+    notFound();
   }
+
+  return product;
 }
 
 export async function generateMetadata({

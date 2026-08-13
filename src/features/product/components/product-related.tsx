@@ -1,3 +1,4 @@
+import { Effect } from 'effect';
 import { Suspense } from 'react';
 
 import { getRelatedProducts } from '@/features/product/api/get-related-products';
@@ -19,7 +20,7 @@ async function ProductCarouselWithData({
   rows,
   productId,
 }: ProductCarouselWithDataProps) {
-  const apiProducts = await getRelatedProducts(productId);
+  const apiProducts = await Effect.runPromise(getRelatedProducts(productId));
   const products = apiProducts.map(adaptApiProductToProductCard);
   const actualColumns = Math.min(
     products.length,

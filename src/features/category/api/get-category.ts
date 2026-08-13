@@ -1,7 +1,16 @@
-import { api, buildUrlWithParams } from '@/lib/api-client';
-import type { Category } from '@/types/api';
+import { HttpClientResponse } from '@effect/platform';
+import { Effect } from 'effect';
 
-export async function getCategory(id: string, options?: RequestInit) {
-  const url = buildUrlWithParams(`api/categories/${id}`);
-  return await api.get<Category>(url, options);
-}
+import { apiTransport } from '@/lib/http-client';
+import { CategorySchema } from '@/types/api-schemas';
+
+import { mapError } from './errors';
+
+export const getCategory = Effect.fn('CategoryApi.getCategory')((id: string) =>
+  apiTransport(`api/categories/${id}`).pipe(
+    Effect.flatMap((response) =>
+      HttpClientResponse.schemaBodyJson(CategorySchema)(response),
+    ),
+    Effect.mapError(mapError('getCategory', id)),
+  ),
+);

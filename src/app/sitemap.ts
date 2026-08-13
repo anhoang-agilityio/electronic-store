@@ -36,7 +36,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Fetch all categories
   let categories: Category[] = [];
   try {
-    categories = await getCategories();
+    categories = await Effect.runPromise(getCategories());
   } catch {
     categories = [];
   }
@@ -56,11 +56,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     let total = 0;
     do {
       try {
-        const response = await getProducts({
-          category: category.id,
-          page,
-          pageSize: PAGE_SIZE,
-        });
+        const response = await Effect.runPromise(
+          getProducts({
+            category: category.id,
+            page,
+            pageSize: PAGE_SIZE,
+          }),
+        );
         if (response && Array.isArray(response.products)) {
           productUrls.push(
             ...response.products.map((product) => ({

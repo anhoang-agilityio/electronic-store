@@ -1,3 +1,4 @@
+import { Effect } from 'effect';
 import * as React from 'react';
 
 import { searchProducts } from '@/features/product/api/search-products';
@@ -30,21 +31,23 @@ export function useSearchProduct(
         return;
       }
 
-      try {
-        const searchParams: SearchParams = {
-          q: query.trim(),
-          page: 1,
-          pageSize,
-        };
+      const searchParams: SearchParams = {
+        q: query.trim(),
+        page: 1,
+        pageSize,
+      };
 
-        const response = await searchProducts(searchParams);
-        setSearchResults(response.products);
-      } catch (error) {
-        if (onError) {
-          onError(error);
-        }
-        setSearchResults([]);
-      }
+      await Effect.runPromise(
+        searchProducts(searchParams).pipe(
+          Effect.match({
+            onFailure: (error) => {
+              onError?.(error);
+              setSearchResults([]);
+            },
+            onSuccess: (response) => setSearchResults(response.products),
+          }),
+        ),
+      );
     },
     [pageSize, onError],
   );

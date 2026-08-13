@@ -1,9 +1,9 @@
+import { Effect } from 'effect';
 import React, { Suspense } from 'react';
 
 import { getBestsellers } from '@/features/product/api/get-bestsellers';
 import { getFeaturedProducts } from '@/features/product/api/get-featured-products';
 import { getNewArrivals } from '@/features/product/api/get-new-arrivals';
-import type { Product as ApiProduct } from '@/types/api';
 
 import { adaptApiProductToProductCard } from '../../utils/dto';
 import {
@@ -19,17 +19,14 @@ type ProductTabContentProps = {
 };
 
 // API mapping function
-const getProductsByTabType = async (
-  tabType: TabValue,
-): Promise<ApiProduct[]> => {
+const getProductsByTabType = (tabType: TabValue) => {
   const apiMapping = {
     [TabValue.NEW_ARRIVAL]: () => getNewArrivals({ limit: 8 }),
     [TabValue.BESTSELLER]: () => getBestsellers({ limit: 8 }),
     [TabValue.FEATURED]: () => getFeaturedProducts({ limit: 8 }),
   };
 
-  const apiCall = apiMapping[tabType];
-  return apiCall ? await apiCall() : [];
+  return apiMapping[tabType]();
 };
 
 type ProductGridWithDataProps = ProductTabContentProps &
@@ -50,17 +47,22 @@ async function ProductGridWithData({
   columns,
   rows,
 }: ProductGridWithDataProps) {
-  try {
-    // Fetch data based on tabType
-    const apiProducts = await getProductsByTabType(tabType);
-
-    // Convert API products to ProductList format
-    const products = apiProducts.map(adaptApiProductToProductCard);
-
-    return <ProductGrid products={products} columns={columns} rows={rows} />;
-  } catch {
-    return <ProductGridError />;
-  }
+  return Effect.runPromise(
+    getProductsByTabType(tabType).pipe(
+      Effect.map((apiProducts) => {
+        const products = apiProducts.map(adaptApiProductToProductCard);
+        return (
+          <ProductGrid
+            key={tabType}
+            products={products}
+            columns={columns}
+            rows={rows}
+          />
+        );
+      }),
+      Effect.catchAll(() => Effect.succeed(<ProductGridError />)),
+    ),
+  );
 }
 
 export function ProductTabContent({ tabType }: ProductTabContentProps) {

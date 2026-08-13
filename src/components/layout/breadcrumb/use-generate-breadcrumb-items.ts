@@ -1,5 +1,6 @@
 'use client';
 
+import { Effect } from 'effect';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -43,7 +44,7 @@ export function useGenerateBreadcrumbItems() {
           const categoryId = segments[0];
 
           if (categoryId) {
-            const category = await getCategory(categoryId);
+            const category = await Effect.runPromise(getCategory(categoryId));
 
             if (category) {
               items.push({
@@ -62,7 +63,7 @@ export function useGenerateBreadcrumbItems() {
           const [categoryId, productId] = segments;
 
           if (categoryId && productId) {
-            const category = await getCategory(categoryId);
+            const category = await Effect.runPromise(getCategory(categoryId));
 
             if (!category) {
               setBreadcrumbItems([]);
@@ -75,7 +76,7 @@ export function useGenerateBreadcrumbItems() {
               href: `/${categoryId}`,
             });
 
-            const product = await getProduct(productId);
+            const product = await Effect.runPromise(getProduct(productId));
             if (product?.name) {
               items.push({
                 label: product.name,

@@ -1,7 +1,19 @@
-import { api, buildUrlWithParams } from '@/lib/api-client';
-import type { Product } from '@/types/api';
+import { HttpClientResponse } from '@effect/platform';
+import { Effect, Schema } from 'effect';
 
-export async function getRelatedProducts(id: string, options?: RequestInit) {
-  const url = buildUrlWithParams(`api/products/${id}/related`);
-  return await api.get<Product[]>(url, options);
-}
+import { apiTransport } from '@/lib/http-client';
+import { ProductSchema } from '@/types/api-schemas';
+
+import { mapError } from './errors';
+
+const ProductsSchema = Schema.mutable(Schema.Array(ProductSchema));
+
+export const getRelatedProducts = Effect.fn('ProductApi.getRelatedProducts')(
+  (id: string) =>
+    apiTransport(`api/products/${id}/related`).pipe(
+      Effect.flatMap((response) =>
+        HttpClientResponse.schemaBodyJson(ProductsSchema)(response),
+      ),
+      Effect.mapError(mapError('getRelatedProducts')),
+    ),
+);

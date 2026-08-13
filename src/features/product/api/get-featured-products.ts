@@ -1,10 +1,24 @@
-import { api, buildUrlWithParams } from '@/lib/api-client';
-import type { Product, FeaturedProductParams } from '@/types/api';
+import { HttpClientResponse } from '@effect/platform';
+import { Effect, Schema } from 'effect';
 
-export async function getFeaturedProducts(
+import { apiTransport } from '@/lib/http-client';
+import { buildUrlWithParams } from '@/lib/url';
+import type { FeaturedProductParams } from '@/types/api';
+import { ProductSchema } from '@/types/api-schemas';
+
+import { mapError } from './errors';
+
+const ProductsSchema = Schema.mutable(Schema.Array(ProductSchema));
+
+export const getFeaturedProducts = Effect.fn('ProductApi.getFeaturedProducts')((
   params?: FeaturedProductParams,
-  options?: RequestInit,
-) {
+) => {
   const url = buildUrlWithParams('api/products/featured', params);
-  return await api.get<Product[]>(url, options);
-}
+
+  return apiTransport(url).pipe(
+    Effect.flatMap((response) =>
+      HttpClientResponse.schemaBodyJson(ProductsSchema)(response),
+    ),
+    Effect.mapError(mapError('getFeaturedProducts')),
+  );
+});

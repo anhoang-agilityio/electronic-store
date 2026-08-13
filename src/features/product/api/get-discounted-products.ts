@@ -1,10 +1,24 @@
-import { api, buildUrlWithParams } from '@/lib/api-client';
-import type { Product, DiscountedProductParams } from '@/types/api';
+import { HttpClientResponse } from '@effect/platform';
+import { Effect, Schema } from 'effect';
 
-export async function getDiscountedProducts(
-  params?: DiscountedProductParams,
-  options?: RequestInit,
-) {
+import { apiTransport } from '@/lib/http-client';
+import { buildUrlWithParams } from '@/lib/url';
+import type { DiscountedProductParams } from '@/types/api';
+import { ProductSchema } from '@/types/api-schemas';
+
+import { mapError } from './errors';
+
+const ProductsSchema = Schema.mutable(Schema.Array(ProductSchema));
+
+export const getDiscountedProducts = Effect.fn(
+  'ProductApi.getDiscountedProducts',
+)((params?: DiscountedProductParams) => {
   const url = buildUrlWithParams('api/products/discounted', params);
-  return await api.get<Product[]>(url, options);
-}
+
+  return apiTransport(url).pipe(
+    Effect.flatMap((response) =>
+      HttpClientResponse.schemaBodyJson(ProductsSchema)(response),
+    ),
+    Effect.mapError(mapError('getDiscountedProducts')),
+  );
+});

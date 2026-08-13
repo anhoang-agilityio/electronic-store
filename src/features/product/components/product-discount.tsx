@@ -1,3 +1,4 @@
+import { Effect } from 'effect';
 import { Suspense } from 'react';
 
 import { getDiscountedProducts } from '@/features/product/api/get-discounted-products';
@@ -28,17 +29,22 @@ async function ProductCarouselWithData({
   columns,
   rows,
 }: ProductCarouselWithDataProps) {
-  try {
-    const apiProducts = await getDiscountedProducts({ limit: 8 });
-
-    const products = apiProducts.map(adaptApiProductToProductCard);
-
-    return (
-      <ProductCarousel products={products} columns={columns} rows={rows} />
-    );
-  } catch {
-    return <ProductCarouselError />;
-  }
+  return Effect.runPromise(
+    getDiscountedProducts({ limit: 8 }).pipe(
+      Effect.map((apiProducts) => {
+        const products = apiProducts.map(adaptApiProductToProductCard);
+        return (
+          <ProductCarousel
+            key="discounted-products"
+            products={products}
+            columns={columns}
+            rows={rows}
+          />
+        );
+      }),
+      Effect.catchAll(() => Effect.succeed(<ProductCarouselError />)),
+    ),
+  );
 }
 
 export function ProductDiscount() {

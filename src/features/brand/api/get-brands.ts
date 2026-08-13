@@ -1,10 +1,26 @@
-import { api, buildUrlWithParams } from '@/lib/api-client';
-import type { BrandListParams, Brand } from '@/types/api';
+import { HttpClientResponse } from '@effect/platform';
+import { Effect, Schema } from 'effect';
 
-export async function getBrands(
+import { apiTransport } from '@/lib/http-client';
+import { buildUrlWithParams } from '@/lib/url';
+import type { BrandListParams } from '@/types/api';
+import { BrandSchema } from '@/types/api-schemas';
+
+import { BrandApiError } from './errors';
+
+const BrandsSchema = Schema.mutable(Schema.Array(BrandSchema));
+
+export const getBrands = Effect.fn('BrandApi.getBrands')((
   params?: BrandListParams,
-  options?: RequestInit,
-) {
+) => {
   const url = buildUrlWithParams('api/brands', params);
-  return await api.get<Brand[]>(url, options);
-}
+
+  return apiTransport(url).pipe(
+    Effect.flatMap((response) =>
+      HttpClientResponse.schemaBodyJson(BrandsSchema)(response),
+    ),
+    Effect.mapError(
+      (cause) => new BrandApiError({ operation: 'getBrands', cause }),
+    ),
+  );
+});
