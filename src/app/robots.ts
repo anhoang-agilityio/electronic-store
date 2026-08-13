@@ -1,15 +1,16 @@
+import { Effect } from 'effect';
 import type { MetadataRoute } from 'next';
 
-import { env } from '@/config/env';
+import { loadPublicConfig } from '@/config/public-config';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = env.BASE_URL;
+  const baseUrl = Effect.runSync(loadPublicConfig()).baseUrl;
   return {
     rules: {
       userAgent: '*',
       allow: '/',
       disallow: ['/api/', '/checkout/', '/cart/', '/profile/'],
     },
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: new URL('/sitemap.xml', baseUrl).toString(),
   };
 }

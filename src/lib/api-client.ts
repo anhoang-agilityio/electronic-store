@@ -1,4 +1,8 @@
-import { env } from '@/config/env';
+import { Effect } from 'effect';
+
+import { loadPublicConfig } from '@/config/public-config';
+
+const publicConfig = Effect.runSync(loadPublicConfig());
 
 export class ApiError extends Error {
   constructor(
@@ -14,11 +18,11 @@ export class ApiError extends Error {
 
 async function fetchApi<T>(path: string, options: RequestInit = {}) {
   const { headers, body, ...rest } = options;
-  const url = new URL(path, env.API_URL);
+  const url = new URL(path, publicConfig.apiUrl);
 
   const response = await fetch(url, {
     headers: {
-      'X-API-Key': env.API_KEY,
+      'X-API-Key': publicConfig.apiKey,
       'Content-Type': 'application/json',
       Accept: 'application/json',
       ...headers,

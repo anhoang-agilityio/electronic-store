@@ -1,36 +1,20 @@
+import { Effect } from 'effect';
 import type { NextConfig } from 'next';
 import type { RemotePattern } from 'next/dist/shared/lib/image-config';
 
-import { env } from '@/config/env';
+import { loadPublicConfig } from '@/config/public-config';
 
-const apiUrl = env.API_URL;
-let remotePatterns: RemotePattern[] = [];
+const apiUrl = Effect.runSync(loadPublicConfig()).apiUrl;
+const protocol: RemotePattern['protocol'] =
+  apiUrl.protocol === 'https:' ? 'https' : 'http';
 
-if (apiUrl) {
-  try {
-    const url = new URL(apiUrl);
-    let protocol: 'http' | 'https' | undefined;
-    const proto = url.protocol.replace(':', '');
-
-    if (proto === 'https') {
-      protocol = 'https';
-    } else if (proto === 'http') {
-      protocol = 'http';
-    } else {
-      protocol = undefined;
-    }
-
-    remotePatterns = [
-      {
-        protocol,
-        hostname: url.hostname,
-        pathname: '/images/**',
-      },
-    ];
-  } catch {
-    // If parsing fails, keep remotePatterns as an empty array
-  }
-}
+const remotePatterns: RemotePattern[] = [
+  {
+    protocol,
+    hostname: apiUrl.hostname,
+    pathname: '/images/**',
+  },
+];
 
 const nextConfig: NextConfig = {
   images: {

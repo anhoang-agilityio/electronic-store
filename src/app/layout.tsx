@@ -1,3 +1,4 @@
+import { Effect } from 'effect';
 import type { Metadata } from 'next';
 import React from 'react';
 
@@ -6,17 +7,19 @@ import { Header } from '@/components/layout/header';
 import { Providers } from '@/components/providers/session-provider';
 import { Toaster } from '@/components/ui/sonner';
 import { AuthStoreSyncer } from '@/components/utils/auth-store-syncer';
-import { env } from '@/config/env';
+import { loadPublicConfig } from '@/config/public-config';
 import { inter } from '@/styles/fonts';
 
 import '@/styles/globals.css';
+
+const publicConfig = Effect.runSync(loadPublicConfig());
 
 export const metadata: Metadata = {
   title: {
     template: '%s | Electronic Store',
     default: 'Electronic Store',
   },
-  metadataBase: new URL(env.BASE_URL),
+  metadataBase: publicConfig.baseUrl,
 };
 
 export default function RootLayout({

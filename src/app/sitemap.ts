@@ -1,19 +1,36 @@
+import { Effect } from 'effect';
 import type { MetadataRoute } from 'next';
 
-import { env } from '@/config/env';
+import { loadPublicConfig } from '@/config/public-config';
 import { getCategories } from '@/features/category/api/get-categories';
 import { getProducts } from '@/features/product/api/get-products';
 import { Category } from '@/types/api';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = env.BASE_URL;
+  const baseUrl = Effect.runSync(loadPublicConfig()).baseUrl;
 
   // Static public pages
   const staticPages: MetadataRoute.Sitemap = [
-    { url: `${baseUrl}/`, changeFrequency: 'monthly', priority: 1 },
-    { url: `${baseUrl}/about`, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${baseUrl}/contact`, changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${baseUrl}/blog`, changeFrequency: 'weekly', priority: 0.5 },
+    {
+      url: new URL('/', baseUrl).toString(),
+      changeFrequency: 'monthly',
+      priority: 1,
+    },
+    {
+      url: new URL('/about', baseUrl).toString(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: new URL('/contact', baseUrl).toString(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: new URL('/blog', baseUrl).toString(),
+      changeFrequency: 'weekly',
+      priority: 0.5,
+    },
   ];
 
   // Fetch all categories
@@ -26,7 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Generate category URLs
   const categoryUrls: MetadataRoute.Sitemap = categories.map((category) => ({
-    url: `${baseUrl}/${category.id}`,
+    url: new URL(`/${category.id}`, baseUrl).toString(),
     changeFrequency: 'weekly',
     priority: 0.7,
   }));
@@ -47,7 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         if (response && Array.isArray(response.products)) {
           productUrls.push(
             ...response.products.map((product) => ({
-              url: `${baseUrl}/${category.id}/${product.id}`,
+              url: new URL(`/${category.id}/${product.id}`, baseUrl).toString(),
               changeFrequency: 'weekly' as const,
               priority: 0.5,
             })),
