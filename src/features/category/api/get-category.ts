@@ -1,7 +1,7 @@
 import { HttpClientResponse } from '@effect/platform';
 import { Effect } from 'effect';
 
-import { apiTransport } from '@/lib/http-client';
+import { apiTransport } from '@/lib/api-client';
 import { CategorySchema } from '@/types/api-schemas';
 
 import { mapError } from './errors';

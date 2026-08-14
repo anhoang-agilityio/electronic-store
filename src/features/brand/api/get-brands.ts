@@ -1,7 +1,7 @@
 import { HttpClientResponse } from '@effect/platform';
 import { Effect, Schema } from 'effect';
 
-import { apiTransport } from '@/lib/http-client';
+import { apiTransport } from '@/lib/api-client';
 import { buildUrlWithParams } from '@/lib/url';
 import type { BrandListParams } from '@/types/api';
 import { BrandSchema } from '@/types/api-schemas';

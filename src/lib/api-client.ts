@@ -1,5 +1,4 @@
 import {
-  FetchHttpClient,
   HttpClient,
   HttpClientError,
   HttpClientRequest,
@@ -35,7 +34,7 @@ export type TransportOptions = RequestOptions & {
   readonly method?: HttpMethod.HttpMethod;
 };
 
-export type ApiClientType = {
+export type Interface = {
   readonly request: (
     path: string,
     options?: TransportOptions,
@@ -62,11 +61,7 @@ export type ApiClientType = {
   ) => Effect.Effect<HttpClientResponse.HttpClientResponse, Error>;
 };
 
-/** Application HTTP transport. Body decoding remains the caller's concern. */
-export class ApiClient extends Context.Tag('ApiClient')<
-  ApiClient,
-  ApiClientType
->() {}
+export class Service extends Context.Tag('ApiClient')<Service, Interface>() {}
 
 function mapHttpClientError(error: HttpClientError.HttpClientError): Error {
   if (error instanceof HttpClientError.RequestError) {
@@ -84,10 +79,8 @@ function mapHttpClientError(error: HttpClientError.HttpClientError): Error {
     cause: error,
   });
 }
-
-/** Fetch-backed implementation of ApiClient. */
-export const ApiClientLive = Layer.effect(
-  ApiClient,
+export const layer = Layer.effect(
+  Service,
   Effect.gen(function* () {
     const config = yield* loadPublicConfig();
     const httpClient = yield* HttpClient.HttpClient;
@@ -107,7 +100,7 @@ export const ApiClientLive = Layer.effect(
       }),
     );
 
-    const request: ApiClientType['request'] = Effect.fn('ApiClient.request')((
+    const request: Interface['request'] = Effect.fn('ApiClient.request')((
       path,
       options = {},
     ) => {
@@ -122,38 +115,30 @@ export const ApiClientLive = Layer.effect(
         );
     });
 
-    const withMethod =
-      (method: HttpMethod.HttpMethod) =>
-      (path: string, options?: RequestOptions) =>
-        request(path, { ...options, method });
+    const get: Interface['get'] = Effect.fn('ApiClient.get')((path, options) =>
+      request(path, { ...options, method: 'GET' }),
+    );
+    const post: Interface['post'] = Effect.fn('ApiClient.post')(
+      (path, options) => request(path, { ...options, method: 'POST' }),
+    );
+    const put: Interface['put'] = Effect.fn('ApiClient.put')((path, options) =>
+      request(path, { ...options, method: 'PUT' }),
+    );
+    const patch: Interface['patch'] = Effect.fn('ApiClient.patch')(
+      (path, options) => request(path, { ...options, method: 'PATCH' }),
+    );
+    const del: Interface['delete'] = Effect.fn('ApiClient.delete')(
+      (path, options) => request(path, { ...options, method: 'DELETE' }),
+    );
 
-    return ApiClient.of({
-      request,
-      get: withMethod('GET'),
-      post: withMethod('POST'),
-      put: withMethod('PUT'),
-      patch: withMethod('PATCH'),
-      delete: withMethod('DELETE'),
-    });
+    return Service.of({ request, get, post, put, patch, delete: del });
   }),
-).pipe(Layer.provide(FetchHttpClient.layer));
+);
 
-/**
- * Compatibility facade for existing callers. New Effect code should yield
- * ApiClient and call its methods directly.
- */
+/** Resolves the configured API client from the calling Effect environment. */
 export const apiTransport = Effect.fn('ApiClient.apiTransport')(
   (path: string, options: TransportOptions = {}) =>
-    Effect.flatMap(ApiClient, (client) => client.request(path, options)).pipe(
-      Effect.provide(ApiClientLive),
-      Effect.mapError((cause) =>
-        cause instanceof HttpRequestError || cause instanceof HttpResponseError
-          ? cause
-          : new HttpRequestError({
-              method: options.method ?? 'GET',
-              url: path,
-              cause,
-            }),
-      ),
-    ),
+    Effect.flatMap(Service, (client) => client.request(path, options)),
 );
+
+export * as ApiClient from './api-client';

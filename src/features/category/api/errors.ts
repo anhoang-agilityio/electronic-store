@@ -1,6 +1,6 @@
 import { Schema } from 'effect';
 
-import { HttpResponseError } from '@/lib/http-client';
+import { HttpResponseError } from '@/lib/api-client';
 
 export class CategoryNotFoundError extends Schema.TaggedError<CategoryNotFoundError>(
   'CategoryNotFoundError',
