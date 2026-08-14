@@ -5,28 +5,9 @@ import {
   HttpClientResponse,
   type HttpMethod,
 } from '@effect/platform';
-import { Context, Effect, Layer, Schema } from 'effect';
+import { Context, Effect, Layer } from 'effect';
 
 import { loadPublicConfig } from '@/config/public-config';
-
-export class HttpRequestError extends Schema.TaggedError<HttpRequestError>(
-  'HttpRequestError',
-)('HttpRequestError', {
-  method: Schema.String,
-  url: Schema.String,
-  cause: Schema.Defect,
-}) {}
-
-export class HttpResponseError extends Schema.TaggedError<HttpResponseError>(
-  'HttpResponseError',
-)('HttpResponseError', {
-  status: Schema.Number,
-  method: Schema.String,
-  url: Schema.String,
-  cause: Schema.Defect,
-}) {}
-
-export type Error = HttpRequestError | HttpResponseError;
 
 export type RequestOptions = Omit<HttpClientRequest.Options, 'method' | 'url'>;
 
@@ -38,47 +19,49 @@ export type Interface = {
   readonly request: (
     path: string,
     options?: TransportOptions,
-  ) => Effect.Effect<HttpClientResponse.HttpClientResponse, Error>;
+  ) => Effect.Effect<
+    HttpClientResponse.HttpClientResponse,
+    HttpClientError.HttpClientError
+  >;
   readonly get: (
     path: string,
     options?: RequestOptions,
-  ) => Effect.Effect<HttpClientResponse.HttpClientResponse, Error>;
+  ) => Effect.Effect<
+    HttpClientResponse.HttpClientResponse,
+    HttpClientError.HttpClientError
+  >;
   readonly post: (
     path: string,
     options?: RequestOptions,
-  ) => Effect.Effect<HttpClientResponse.HttpClientResponse, Error>;
+  ) => Effect.Effect<
+    HttpClientResponse.HttpClientResponse,
+    HttpClientError.HttpClientError
+  >;
   readonly put: (
     path: string,
     options?: RequestOptions,
-  ) => Effect.Effect<HttpClientResponse.HttpClientResponse, Error>;
+  ) => Effect.Effect<
+    HttpClientResponse.HttpClientResponse,
+    HttpClientError.HttpClientError
+  >;
   readonly patch: (
     path: string,
     options?: RequestOptions,
-  ) => Effect.Effect<HttpClientResponse.HttpClientResponse, Error>;
+  ) => Effect.Effect<
+    HttpClientResponse.HttpClientResponse,
+    HttpClientError.HttpClientError
+  >;
   readonly delete: (
     path: string,
     options?: RequestOptions,
-  ) => Effect.Effect<HttpClientResponse.HttpClientResponse, Error>;
+  ) => Effect.Effect<
+    HttpClientResponse.HttpClientResponse,
+    HttpClientError.HttpClientError
+  >;
 };
 
 export class Service extends Context.Tag('ApiClient')<Service, Interface>() {}
 
-function mapHttpClientError(error: HttpClientError.HttpClientError): Error {
-  if (error instanceof HttpClientError.RequestError) {
-    return new HttpRequestError({
-      method: error.request.method,
-      url: error.request.url,
-      cause: error,
-    });
-  }
-
-  return new HttpResponseError({
-    status: error.response.status,
-    method: error.request.method,
-    url: error.request.url,
-    cause: error,
-  });
-}
 export const layer = Layer.effect(
   Service,
   Effect.gen(function* () {
@@ -109,10 +92,7 @@ export const layer = Layer.effect(
 
       return configuredClient
         .execute(httpRequest)
-        .pipe(
-          Effect.flatMap(HttpClientResponse.filterStatusOk),
-          Effect.mapError(mapHttpClientError),
-        );
+        .pipe(Effect.flatMap(HttpClientResponse.filterStatusOk));
     });
 
     const get: Interface['get'] = Effect.fn('ApiClient.get')((path, options) =>
