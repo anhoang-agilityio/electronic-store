@@ -1,10 +1,4 @@
-import {
-  Config,
-  type ConfigError,
-  ConfigProvider,
-  Effect,
-  Schema,
-} from 'effect';
+import { Context, Effect, Layer, ParseResult, Schema } from 'effect';
 
 const HttpUrl = Schema.URL.pipe(
   Schema.filter(
@@ -15,28 +9,37 @@ const HttpUrl = Schema.URL.pipe(
 
 const TrimmedNonEmptyString = Schema.Trim.pipe(Schema.nonEmptyString());
 
-const publicConfigRecipe = Config.all({
-  baseUrl: Schema.Config('NEXT_PUBLIC_BASE_URL', HttpUrl),
-  apiUrl: Schema.Config('NEXT_PUBLIC_API_URL', HttpUrl),
-  apiKey: Schema.Config('NEXT_PUBLIC_API_KEY', TrimmedNonEmptyString),
+const publicConfig = Schema.Struct({
+  baseUrl: HttpUrl,
+  apiUrl: HttpUrl,
+  apiKey: TrimmedNonEmptyString,
 });
 
-/** Browser-safe configuration decoded from Next.js public environment values. */
-export type PublicConfig = Config.Config.Success<typeof publicConfigRecipe>;
+type PublicConfig = Schema.Schema.Type<typeof publicConfig>;
+export type Interface = {
+  readonly get: Effect.Effect<PublicConfig, ParseResult.ParseError>;
+};
 
-/** Loads public environment configuration while preserving typed configuration failures. */
-export function loadPublicConfig(): Effect.Effect<
-  PublicConfig,
-  ConfigError.ConfigError
-> {
-  const nextPublicConfigProvider = ConfigProvider.fromJson({
-    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-    NEXT_PUBLIC_API_KEY: process.env.NEXT_PUBLIC_API_KEY,
-  });
+export class Service extends Context.Tag('PublicConfig')<
+  Service,
+  Interface
+>() {}
 
-  return Effect.withConfigProvider(
-    publicConfigRecipe,
-    nextPublicConfigProvider,
-  );
-}
+export const layer = Layer.effect(
+  Service,
+  Effect.gen(function* () {
+    const get = yield* Effect.cached(
+      Schema.decodeUnknown(publicConfig)({
+        baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
+        apiUrl: process.env.NEXT_PUBLIC_API_URL,
+        apiKey: process.env.NEXT_PUBLIC_API_KEY,
+      }),
+    );
+
+    return Service.of({ get });
+  }),
+);
+
+export const defaultLayer = layer;
+
+export * as PublicConfig from './public-config';

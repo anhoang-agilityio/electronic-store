@@ -1,4 +1,5 @@
 import {
+  FetchHttpClient,
   HttpClient,
   HttpClientError,
   HttpClientRequest,
@@ -7,11 +8,11 @@ import {
 } from '@effect/platform';
 import { Context, Effect, Layer } from 'effect';
 
-import { loadPublicConfig } from '@/config/public-config';
+import { PublicConfig } from '@/config/public-config';
 
-export type RequestOptions = Omit<HttpClientRequest.Options, 'method' | 'url'>;
+type RequestOptions = Omit<HttpClientRequest.Options, 'method' | 'url'>;
 
-export type TransportOptions = RequestOptions & {
+type TransportOptions = RequestOptions & {
   readonly method?: HttpMethod.HttpMethod;
 };
 
@@ -65,9 +66,11 @@ export class Service extends Context.Tag('ApiClient')<Service, Interface>() {}
 export const layer = Layer.effect(
   Service,
   Effect.gen(function* () {
-    const config = yield* loadPublicConfig();
+    const publicConfig = yield* PublicConfig.Service;
+    const { apiUrl, apiKey } = yield* publicConfig.get;
     const httpClient = yield* HttpClient.HttpClient;
-    const baseUrl = config.apiUrl.toString().replace(/\/?$/, '/');
+
+    const baseUrl = apiUrl.toString().replace(/\/?$/, '/');
 
     const configuredClient = httpClient.pipe(
       HttpClient.mapRequest((request) => {
@@ -77,7 +80,7 @@ export const layer = Layer.effect(
           HttpClientRequest.prependUrl(baseUrl),
           HttpClientRequest.acceptJson,
           HttpClientRequest.setHeader('Content-Type', 'application/json'),
-          HttpClientRequest.setHeader('X-API-Key', config.apiKey),
+          HttpClientRequest.setHeader('X-API-Key', apiKey),
           HttpClientRequest.setHeaders(callerHeaders),
         );
       }),
@@ -113,6 +116,11 @@ export const layer = Layer.effect(
 
     return Service.of({ request, get, post, put, patch, delete: del });
   }),
+);
+
+export const defaultLayer = layer.pipe(
+  Layer.provide(FetchHttpClient.layer),
+  Layer.provide(PublicConfig.layer),
 );
 
 /** Resolves the configured API client from the calling Effect environment. */
