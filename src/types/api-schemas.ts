@@ -1,18 +1,17 @@
 import { Schema } from 'effect';
 
+import { Category } from '@/features/category/domain';
 import type {
   Brand,
-  Category,
   Product,
   ProductListResponse,
   SearchResponse,
 } from '@/types/api';
 
-export const CategorySchema: Schema.Schema<Category> = Schema.Struct({
-  id: Schema.String,
-  name: Schema.String,
-  image: Schema.String,
-});
+// Re-exported from domain — single source of truth. `CategorySchema` alias
+// kept for backwards compat with existing imports from `@/types/api-schemas`.
+export { Category };
+export const CategorySchema = Category;
 
 export const BrandSchema: Schema.Schema<Brand> = Schema.Struct({
   id: Schema.String,

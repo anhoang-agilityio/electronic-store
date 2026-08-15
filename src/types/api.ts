@@ -75,11 +75,8 @@ export type SearchResponse = PaginatedResponse<Product> & {
   query: string;
 };
 
-export type Category = {
-  id: string;
-  name: string;
-  image: string;
-};
+// Domain re-export — single source of truth lives in `features/category/domain`
+export type { Category } from '@/features/category/domain';
 
 export type Brand = {
   id: string;
