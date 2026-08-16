@@ -1,35 +1,22 @@
 import { Effect } from 'effect';
 import { Suspense } from 'react';
 
-import { getCategories } from '@/features/category/api/get-categories';
+import { CategoryService } from '@/features/category/service/category-service';
+import { appRuntime } from '@/lib/effect/runtime';
 
 import { CategoryListSkeleton } from './category-list-skeleton';
 import { CategoryListUI } from './category-list-ui';
 
-// Component to fetch and display categories
 async function CategoryListWithData() {
-  return Effect.runPromise(
-    getCategories().pipe(
-      Effect.map((categories) => {
-        const transformedCategories = categories.map((category) => ({
-          id: category.id,
-          name: category.name,
-          image: category.image,
-        }));
+  return appRuntime.runPromise(
+    Effect.gen(function* () {
+      const categoryService = yield* CategoryService.Service;
+      const categories = yield* categoryService.getCategories();
 
-        return (
-          <CategoryListUI
-            key="category-list"
-            categories={transformedCategories}
-          />
-        );
-      }),
-      Effect.catchAll(() => Effect.succeed(null)),
-    ),
+      return <CategoryListUI key="category-list" categories={categories} />;
+    }).pipe(Effect.catchAll(() => Effect.succeed(null))),
   );
 }
-
-// Main container component with Suspense
 export function CategoryList() {
   return (
     <Suspense fallback={<CategoryListSkeleton />}>

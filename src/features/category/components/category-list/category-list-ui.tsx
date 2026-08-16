@@ -11,17 +11,12 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { paths } from '@/config/paths';
+import { type Category } from '@/features/category/domain';
 import { useBreakpoints } from '@/hooks/use-breakpoints';
 import { chunkArray } from '@/utils/array';
 
-type CategoryCard = {
-  id: string;
-  name: string;
-  image: string;
-};
-
 type CategoryListUIProps = {
-  categories: CategoryCard[];
+  categories: Category[];
 };
 
 export function CategoryListUI({ categories }: CategoryListUIProps) {

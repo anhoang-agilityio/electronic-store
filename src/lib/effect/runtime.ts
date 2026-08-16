@@ -1,8 +1,11 @@
 import { Layer, ManagedRuntime } from 'effect';
 
 import { PublicConfig } from '@/config/public-config';
-import { ApiClient } from '@/lib/api-client';
+import { CategoryService } from '@/features/category/service/category-service';
 
-const appLayer = Layer.merge(ApiClient.defaultLayer, PublicConfig.defaultLayer);
+const appLayer = Layer.merge(
+  PublicConfig.defaultLayer,
+  CategoryService.defaultLayer,
+);
 
 export const appRuntime = ManagedRuntime.make(appLayer);
