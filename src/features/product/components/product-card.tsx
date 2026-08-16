@@ -7,16 +7,10 @@ import React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { paths } from '@/config/paths';
+import type { ProductCardModel } from '@/features/product/mappers/product-mapper';
 
 export type ProductCardProps = {
-  product: {
-    id: string;
-    name: string;
-    price: number;
-    image: string;
-    categoryId: string;
-    isFavorite?: boolean;
-  };
+  product: ProductCardModel;
 };
 
 export function ProductCard({ product }: ProductCardProps) {

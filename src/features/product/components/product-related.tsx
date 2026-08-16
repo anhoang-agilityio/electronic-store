@@ -1,13 +1,14 @@
 import { Effect } from 'effect';
-import { Suspense } from 'react';
+import React, { Suspense } from 'react';
 
-import { getRelatedProducts } from '@/features/product/api/get-related-products';
-import { adaptApiProductToProductCard } from '@/features/product/utils/dto';
+import { toProductCard } from '@/features/product/mappers/product-mapper';
+import { ProductService } from '@/features/product/service/product-service';
+import { appRuntime } from '@/lib/effect/runtime';
 
 import {
+  ProductCarousel,
   ProductListSkeleton,
   type ProductCarouselProps,
-  ProductCarousel,
 } from './product-layout';
 
 type ProductCarouselWithDataProps = Pick<
@@ -15,20 +16,37 @@ type ProductCarouselWithDataProps = Pick<
   'columns' | 'rows'
 > & { productId: string };
 
+function ProductCarouselError() {
+  return (
+    <div className="p-4 text-center text-destructive">
+      Failed to load related products. Please try again later.
+    </div>
+  );
+}
+
 async function ProductCarouselWithData({
   columns,
   rows,
   productId,
-}: ProductCarouselWithDataProps) {
-  const apiProducts = await Effect.runPromise(getRelatedProducts(productId));
-  const products = apiProducts.map(adaptApiProductToProductCard);
-  const actualColumns = Math.min(
-    products.length,
-    columns ?? 4,
-  ) as ProductCarouselProps['columns'];
+}: ProductCarouselWithDataProps): Promise<React.ReactNode> {
+  return appRuntime.runPromise(
+    Effect.gen(function* () {
+      const productService = yield* ProductService.Service;
+      const products = yield* productService.getRelatedProducts(productId);
+      const cardModels = products.map(toProductCard);
+      const actualColumns = Math.min(
+        cardModels.length,
+        columns ?? 4,
+      ) as ProductCarouselProps['columns'];
 
-  return (
-    <ProductCarousel products={products} columns={actualColumns} rows={rows} />
+      return (
+        <ProductCarousel
+          products={cardModels}
+          columns={actualColumns}
+          rows={rows}
+        />
+      );
+    }).pipe(Effect.catchAll(() => Effect.succeed(<ProductCarouselError />))),
   );
 }
 

@@ -1,11 +1,10 @@
 import { Effect } from 'effect';
 import React, { Suspense } from 'react';
 
-import { getBestsellers } from '@/features/product/api/get-bestsellers';
-import { getFeaturedProducts } from '@/features/product/api/get-featured-products';
-import { getNewArrivals } from '@/features/product/api/get-new-arrivals';
+import { toProductCard } from '@/features/product/mappers/product-mapper';
+import { ProductService } from '@/features/product/service/product-service';
+import { appRuntime } from '@/lib/effect/runtime';
 
-import { adaptApiProductToProductCard } from '../../utils/dto';
 import {
   ProductGrid,
   ProductListSkeleton,
@@ -16,17 +15,6 @@ import { TabValue } from './config';
 
 type ProductTabContentProps = {
   tabType: TabValue;
-};
-
-// API mapping function
-const getProductsByTabType = (tabType: TabValue) => {
-  const apiMapping = {
-    [TabValue.NEW_ARRIVAL]: () => getNewArrivals({ limit: 8 }),
-    [TabValue.BESTSELLER]: () => getBestsellers({ limit: 8 }),
-    [TabValue.FEATURED]: () => getFeaturedProducts({ limit: 8 }),
-  };
-
-  return apiMapping[tabType]();
 };
 
 type ProductGridWithDataProps = ProductTabContentProps &
@@ -46,22 +34,33 @@ async function ProductGridWithData({
   tabType,
   columns,
   rows,
-}: ProductGridWithDataProps) {
-  return Effect.runPromise(
-    getProductsByTabType(tabType).pipe(
-      Effect.map((apiProducts) => {
-        const products = apiProducts.map(adaptApiProductToProductCard);
-        return (
-          <ProductGrid
-            key={tabType}
-            products={products}
-            columns={columns}
-            rows={rows}
-          />
-        );
-      }),
-      Effect.catchAll(() => Effect.succeed(<ProductGridError />)),
-    ),
+}: ProductGridWithDataProps): Promise<React.ReactNode> {
+  return appRuntime.runPromise(
+    Effect.gen(function* () {
+      const productService = yield* ProductService.Service;
+
+      const products = yield* (() => {
+        switch (tabType) {
+          case TabValue.NEW_ARRIVAL:
+            return productService.getNewArrivals({ limit: 8 });
+          case TabValue.BESTSELLER:
+            return productService.getBestsellers({ limit: 8 });
+          case TabValue.FEATURED:
+            return productService.getFeaturedProducts({ limit: 8 });
+        }
+      })();
+
+      const cardModels = products.map(toProductCard);
+
+      return (
+        <ProductGrid
+          key={tabType}
+          products={cardModels}
+          columns={columns}
+          rows={rows}
+        />
+      );
+    }).pipe(Effect.catchAll(() => Effect.succeed(<ProductGridError />))),
   );
 }
 

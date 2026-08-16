@@ -13,15 +13,13 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import { withSuspense } from '@/components/utils/with-suspense';
-import {
-  ProductCard,
-  type ProductCardProps,
-} from '@/features/product/components/product-card';
+import { ProductCard } from '@/features/product/components/product-card';
+import type { ProductCardModel } from '@/features/product/mappers/product-mapper';
 
 type ValidColumns = 1 | 2 | 3 | 4 | 5 | 6;
 
-export type ProductGridProps = Omit<ProductCardProps, 'product'> & {
-  products: ProductCardProps['product'][];
+export type ProductGridProps = {
+  products: ProductCardModel[];
   columns?: ValidColumns;
   rows?: number;
   currentPage?: number;

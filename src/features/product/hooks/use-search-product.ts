@@ -1,8 +1,9 @@
 import { Effect } from 'effect';
 import * as React from 'react';
 
-import { searchProducts } from '@/features/product/api/search-products';
-import type { SearchParams, Product } from '@/types/api';
+import { ProductService } from '@/features/product/service/product-service';
+import { appRuntime } from '@/lib/effect/runtime';
+import type { Product, SearchParams } from '@/types/api';
 
 export type UseSearchProductOptions = {
   pageSize?: number;
@@ -37,8 +38,11 @@ export function useSearchProduct(
         pageSize,
       };
 
-      await Effect.runPromise(
-        searchProducts(searchParams).pipe(
+      await appRuntime.runPromise(
+        Effect.gen(function* () {
+          const productService = yield* ProductService.Service;
+          return yield* productService.searchProducts(searchParams);
+        }).pipe(
           Effect.match({
             onFailure: (error) => {
               onError?.(error);

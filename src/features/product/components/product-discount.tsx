@@ -1,14 +1,14 @@
 import { Effect } from 'effect';
-import { Suspense } from 'react';
+import React, { Suspense } from 'react';
 
-import { getDiscountedProducts } from '@/features/product/api/get-discounted-products';
-
-import { adaptApiProductToProductCard } from '../utils/dto';
+import { toProductCard } from '@/features/product/mappers/product-mapper';
+import { ProductService } from '@/features/product/service/product-service';
+import { appRuntime } from '@/lib/effect/runtime';
 
 import {
+  ProductCarousel,
   ProductListSkeleton,
   type ProductCarouselProps,
-  ProductCarousel,
 } from './product-layout';
 
 type ProductCarouselWithDataProps = Pick<
@@ -28,22 +28,24 @@ function ProductCarouselError() {
 async function ProductCarouselWithData({
   columns,
   rows,
-}: ProductCarouselWithDataProps) {
-  return Effect.runPromise(
-    getDiscountedProducts({ limit: 8 }).pipe(
-      Effect.map((apiProducts) => {
-        const products = apiProducts.map(adaptApiProductToProductCard);
-        return (
-          <ProductCarousel
-            key="discounted-products"
-            products={products}
-            columns={columns}
-            rows={rows}
-          />
-        );
-      }),
-      Effect.catchAll(() => Effect.succeed(<ProductCarouselError />)),
-    ),
+}: ProductCarouselWithDataProps): Promise<React.ReactNode> {
+  return appRuntime.runPromise(
+    Effect.gen(function* () {
+      const productService = yield* ProductService.Service;
+      const products = yield* productService.getDiscountedProducts({
+        limit: 8,
+      });
+      const cardModels = products.map(toProductCard);
+
+      return (
+        <ProductCarousel
+          key="discounted-products"
+          products={cardModels}
+          columns={columns}
+          rows={rows}
+        />
+      );
+    }).pipe(Effect.catchAll(() => Effect.succeed(<ProductCarouselError />))),
   );
 }
 

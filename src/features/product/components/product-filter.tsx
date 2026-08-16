@@ -22,22 +22,19 @@ import {
 } from '@/components/ui/sheet';
 import { Slider } from '@/components/ui/slider';
 import { withSuspense } from '@/components/utils/with-suspense';
+import type { Brand } from '@/features/brand/domain';
 import { useBreakpoints } from '@/hooks/use-breakpoints';
 
-// Brand type definition
-type Brand = {
-  brandId: string;
-  brandName: string;
-};
+type BrandFilterOption = Pick<Brand, 'id' | 'name'>;
 
 type ProductFilterPanelProps = {
   price: [number, number];
   setPrice: Dispatch<SetStateAction<[number, number]>>;
   brandSearch: string;
   setBrandSearch: Dispatch<SetStateAction<string>>;
-  selectedBrands: Brand[];
-  setSelectedBrands: Dispatch<SetStateAction<Brand[]>>;
-  brands: Brand[];
+  selectedBrands: BrandFilterOption[];
+  setSelectedBrands: Dispatch<SetStateAction<BrandFilterOption[]>>;
+  brands: BrandFilterOption[];
   onApply?: () => void;
 };
 
@@ -52,8 +49,8 @@ function ProductFilterPanel({
   onApply,
 }: ProductFilterPanelProps) {
   // Filter brands by search
-  const filteredBrands = brands.filter((brand: Brand) =>
-    brand.brandName.toLowerCase().includes(brandSearch.toLowerCase()),
+  const filteredBrands = brands.filter((brand) =>
+    brand.name.toLowerCase().includes(brandSearch.toLowerCase()),
   );
 
   return (
@@ -101,26 +98,22 @@ function ProductFilterPanel({
             />
             <ScrollArea className="h-40 pr-2">
               <div className="flex flex-col gap-2">
-                {filteredBrands.map((brand: Brand) => (
+                {filteredBrands.map((brand) => (
                   <label
-                    key={brand.brandId}
+                    key={brand.id}
                     className="flex items-center gap-2 cursor-pointer"
                   >
                     <Checkbox
-                      checked={selectedBrands.some(
-                        (b) => b.brandId === brand.brandId,
-                      )}
+                      checked={selectedBrands.some((b) => b.id === brand.id)}
                       onCheckedChange={(checked) => {
                         setSelectedBrands(
                           checked
                             ? [...selectedBrands, brand]
-                            : selectedBrands.filter(
-                                (b) => b.brandId !== brand.brandId,
-                              ),
+                            : selectedBrands.filter((b) => b.id !== brand.id),
                         );
                       }}
                     />
-                    <span className="text-sm">{brand.brandName}</span>
+                    <span className="text-sm">{brand.name}</span>
                   </label>
                 ))}
               </div>
@@ -136,7 +129,7 @@ function ProductFilterPanel({
 }
 
 type ProductFilterProps = {
-  brands?: Brand[];
+  brands?: BrandFilterOption[];
 };
 
 export const ProductFilter = withSuspense(function ({
@@ -155,18 +148,18 @@ export const ProductFilter = withSuspense(function ({
   const [brandSearch, setBrandSearch] = useState('');
 
   // Initialize selected brands from URL params
-  const initialSelectedBrands: Brand[] = [];
+  const initialSelectedBrands: BrandFilterOption[] = [];
   const brandsParam = searchParams.get('brands');
   if (brandsParam) {
     const brandIds = brandsParam.split(',');
     brandIds.forEach((brandId) => {
-      const brand = brands.find((b) => b.brandId === brandId);
+      const brand = brands.find((b) => b.id === brandId);
       if (brand) {
         initialSelectedBrands.push(brand);
       }
     });
   }
-  const [selectedBrands, setSelectedBrands] = useState<Brand[]>(
+  const [selectedBrands, setSelectedBrands] = useState<BrandFilterOption[]>(
     initialSelectedBrands,
   );
 
@@ -181,7 +174,7 @@ export const ProductFilter = withSuspense(function ({
 
     // Update brands param
     if (selectedBrands.length > 0) {
-      const brandIds = selectedBrands.map((brand) => brand.brandId).join(',');
+      const brandIds = selectedBrands.map((brand) => brand.id).join(',');
       params.set('brands', brandIds);
     } else {
       params.delete('brands');

@@ -9,16 +9,14 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
-import {
-  ProductCard,
-  ProductCardProps,
-} from '@/features/product/components/product-card';
+import { ProductCard } from '@/features/product/components/product-card';
+import type { ProductCardModel } from '@/features/product/mappers/product-mapper';
 import { chunkArray } from '@/utils/array';
 
 type ValidColumns = 1 | 2 | 3 | 4 | 5 | 6;
 
-export type ProductCarouselProps = Omit<ProductCardProps, 'product'> & {
-  products: ProductCardProps['product'][];
+export type ProductCarouselProps = {
+  products: ProductCardModel[];
   columns?: ValidColumns;
   rows?: number;
 };
