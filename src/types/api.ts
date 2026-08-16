@@ -46,7 +46,8 @@ export type SearchParams = PaginationParams &
     q: string;
   };
 
-export type BrandListParams = ProductCategoryParams;
+// Re-exported from brand repository — single source of truth
+export type { FindAllParam as BrandListParams } from '@/features/brand/repository/brand-repository';
 
 export type DiscountedProductParams = ProductCategoryParams &
   ProductLimitParams & {
@@ -75,14 +76,9 @@ export type SearchResponse = PaginatedResponse<Product> & {
   query: string;
 };
 
-// Domain re-export — single source of truth lives in `features/category/domain`
+// Domain re-exports — single source of truth lives in `features/*/domain`
+export type { Brand } from '@/features/brand/domain';
 export type { Category } from '@/features/category/domain';
-
-export type Brand = {
-  id: string;
-  name: string;
-  categoryId: string;
-};
 
 export type ProductDetail = Record<string, Record<string, string>>;
 
