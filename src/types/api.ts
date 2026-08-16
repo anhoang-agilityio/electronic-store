@@ -1,3 +1,5 @@
+import type { Product } from '@/features/product/domain';
+
 // Types for API requests
 type PaginationParams = {
   page?: number;
@@ -79,6 +81,7 @@ export type SearchResponse = PaginatedResponse<Product> & {
 // Domain re-exports — single source of truth lives in `features/*/domain`
 export type { Brand } from '@/features/brand/domain';
 export type { Category } from '@/features/category/domain';
+export type { Product } from '@/features/product/domain';
 
 export type ProductDetail = Record<string, Record<string, string>>;
 
@@ -87,27 +90,4 @@ export type Review = {
   comment: string;
   date: string;
   reviewerName: string;
-};
-
-export type Product = {
-  id: string;
-  name: string;
-  images: string[];
-  price: number;
-  discountPercent: number;
-  description: string;
-  rating: number;
-  shippingInfo: string;
-  availability: 'in_stock' | 'out_of_stock' | 'preorder';
-  warranty: string;
-  relatedProductIds: string[];
-  detailDescription: string;
-  details: ProductDetail;
-  reviews: Review[];
-  brandId: string;
-  categoryId: string;
-  isNewArrival?: boolean;
-  isBestseller?: boolean;
-  isFeatured?: boolean;
-  isDiscount?: boolean;
 };
