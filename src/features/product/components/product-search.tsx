@@ -20,7 +20,7 @@ export function ProductSearch() {
   const [open, setOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
 
-  const { searchResults, isPending, search } = useSearchProduct();
+  const { state, search, clear } = useSearchProduct();
 
   const router = useRouter();
 
@@ -29,10 +29,19 @@ export function ProductSearch() {
     search(value);
   };
 
+  const handleOpenChange = (nextOpen: boolean) => {
+    setOpen(nextOpen);
+    if (!nextOpen) {
+      setSearchQuery('');
+      clear();
+    }
+  };
+
   // Handle product selection
   const handleProductSelect = (product: { id: string; categoryId: string }) => {
     setOpen(false);
     setSearchQuery('');
+    clear();
 
     const href = paths
       .category(product.categoryId)
@@ -40,6 +49,8 @@ export function ProductSearch() {
       .getHref();
     router.push(href);
   };
+
+  const trimmed = searchQuery.trim();
 
   return (
     <>
@@ -67,7 +78,7 @@ export function ProductSearch() {
       <CommandDialog
         shouldFilter={false}
         open={open}
-        onOpenChange={setOpen}
+        onOpenChange={handleOpenChange}
         className="sm:max-w-[calc(100%-2rem)] lg:max-w-5xl top-4 translate-y-0"
       >
         <CommandInput
@@ -76,30 +87,30 @@ export function ProductSearch() {
           onValueChange={handleSearchChange}
         />
         <CommandList>
-          {searchQuery.trim() && (
-            <>
-              {isPending ? (
-                <div className="p-4 text-center text-sm text-muted-foreground">
-                  Searching...
-                </div>
-              ) : searchResults.length === 0 ? (
-                <CommandEmpty>No results found.</CommandEmpty>
-              ) : (
-                <CommandList>
-                  <CommandGroup heading="Products">
-                    {searchResults.map((product) => (
-                      <CommandItem
-                        key={product.id}
-                        onSelect={() => handleProductSelect(product)}
-                      >
-                        {product.name}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              )}
-            </>
-          )}
+          {trimmed.length === 0 ? null : state._tag === 'Loading' ? (
+            <div className="p-4 text-center text-sm text-muted-foreground">
+              Searching...
+            </div>
+          ) : state._tag === 'Failure' ? (
+            <div className="p-4 text-center text-sm text-destructive">
+              Search failed. Please try again.
+            </div>
+          ) : state._tag === 'Success' ? (
+            state.products.length === 0 ? (
+              <CommandEmpty>No results found.</CommandEmpty>
+            ) : (
+              <CommandGroup heading="Products">
+                {state.products.map((product) => (
+                  <CommandItem
+                    key={product.id}
+                    onSelect={() => handleProductSelect(product)}
+                  >
+                    {product.name}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            )
+          ) : null}
         </CommandList>
       </CommandDialog>
     </>
