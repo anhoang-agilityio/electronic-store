@@ -1,13 +1,16 @@
 import { Effect } from 'effect';
 import type { MetadataRoute } from 'next';
 
-import { loadPublicConfig } from '@/config/public-config';
-import { getCategories } from '@/features/category/api/get-categories';
-import { getProducts } from '@/features/product/api/get-products';
-import { Category } from '@/types/api';
+import { PublicConfig } from '@/config/public-config';
+import { CategoryService } from '@/features/category/service/category-service';
+import { ProductService } from '@/features/product/service/product-service';
+import { appRuntime } from '@/lib/effect/runtime';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = Effect.runSync(loadPublicConfig()).baseUrl;
+  const { baseUrl } = PublicConfig.Service.pipe(
+    Effect.flatMap((service) => service.get),
+    appRuntime.runSync,
+  );
 
   // Static public pages
   const staticPages: MetadataRoute.Sitemap = [
@@ -34,12 +37,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Fetch all categories
-  let categories: Category[] = [];
-  try {
-    categories = await Effect.runPromise(getCategories());
-  } catch {
-    categories = [];
-  }
+  const categories = await CategoryService.Service.pipe(
+    Effect.flatMap((service) => service.getCategories()),
+    Effect.catchAll(() => Effect.succeed([])),
+    appRuntime.runPromise,
+  );
 
   // Generate category URLs
   const categoryUrls: MetadataRoute.Sitemap = categories.map((category) => ({
@@ -56,13 +58,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     let total = 0;
     do {
       try {
-        const response = await Effect.runPromise(
-          getProducts({
-            category: category.id,
-            page,
-            pageSize: PAGE_SIZE,
-          }),
+        const response = await ProductService.Service.pipe(
+          Effect.flatMap((service) =>
+            service.getProducts({
+              category: category.id,
+              page,
+              pageSize: PAGE_SIZE,
+            }),
+          ),
+          appRuntime.runPromise,
         );
+
         if (response && Array.isArray(response.products)) {
           productUrls.push(
             ...response.products.map((product) => ({
@@ -75,10 +81,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           page++;
           // Stop if we've fetched all products
           if (response.products.length < PAGE_SIZE) break;
+        } else {
+          break;
         }
       } catch {
-        // Fetch error, continue to next page
-        continue;
+        // Fetch error, stop pagination for this category
+        break;
       }
     } while ((page - 1) * PAGE_SIZE < total);
   }

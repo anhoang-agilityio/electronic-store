@@ -5,8 +5,9 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import { paths } from '@/config/paths';
-import { getCategory } from '@/features/category/api/get-category';
-import { getProduct } from '@/features/product/api/get-product';
+import { CategoryService } from '@/features/category/service/category-service';
+import { ProductService } from '@/features/product/service/product-service';
+import { appRuntime } from '@/lib/effect/runtime';
 
 type BreadcrumbItem = {
   label: string;
@@ -44,7 +45,12 @@ export function useGenerateBreadcrumbItems() {
           const categoryId = segments[0];
 
           if (categoryId) {
-            const category = await Effect.runPromise(getCategory(categoryId));
+            const category = await appRuntime.runPromise(
+              Effect.gen(function* () {
+                const categoryService = yield* CategoryService.Service;
+                return yield* categoryService.getCategory(categoryId);
+              }).pipe(Effect.catchAll(() => Effect.succeed(null))),
+            );
 
             if (category) {
               items.push({
@@ -63,7 +69,12 @@ export function useGenerateBreadcrumbItems() {
           const [categoryId, productId] = segments;
 
           if (categoryId && productId) {
-            const category = await Effect.runPromise(getCategory(categoryId));
+            const category = await appRuntime.runPromise(
+              Effect.gen(function* () {
+                const categoryService = yield* CategoryService.Service;
+                return yield* categoryService.getCategory(categoryId);
+              }).pipe(Effect.catchAll(() => Effect.succeed(null))),
+            );
 
             if (!category) {
               setBreadcrumbItems([]);
@@ -76,7 +87,12 @@ export function useGenerateBreadcrumbItems() {
               href: `/${categoryId}`,
             });
 
-            const product = await Effect.runPromise(getProduct(productId));
+            const product = await appRuntime.runPromise(
+              Effect.gen(function* () {
+                const productService = yield* ProductService.Service;
+                return yield* productService.getProduct(productId);
+              }).pipe(Effect.catchAll(() => Effect.succeed(null))),
+            );
             if (product?.name) {
               items.push({
                 label: product.name,

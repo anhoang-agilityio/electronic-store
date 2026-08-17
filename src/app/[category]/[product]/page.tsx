@@ -6,37 +6,45 @@ import { notFound } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { AddToCart } from '@/features/cart/components/add-to-cart';
-import { getProduct } from '@/features/product/api/get-product';
 import { ProductDetail } from '@/features/product/components/product-detail';
 import { ProductFeature } from '@/features/product/components/product-feature';
 import { ProductRating } from '@/features/product/components/product-rating';
 import { ProductRatingSchedule } from '@/features/product/components/product-rating-schedule';
 import { ProductRelated } from '@/features/product/components/product-related';
 import { ProductReview } from '@/features/product/components/product-review';
+import { ProductService } from '@/features/product/service/product-service';
+import { appRuntime } from '@/lib/effect/runtime';
 import { getDiscountedPrice } from '@/utils/price';
 import { snakeToTitleCase } from '@/utils/string';
 
-async function fetchProductOrNotFound(productId: string) {
-  const product = await Effect.runPromise(
-    getProduct(productId).pipe(
-      Effect.catchTag('ProductNotFoundError', () => Effect.succeed(null)),
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function fetchProductOrNotFound(productId: string) {
+  return Effect.gen(function* () {
+    const productService = yield* ProductService.Service;
+    return yield* productService.getProduct(productId);
+  }).pipe(
+    Effect.catchTag('ProductNotFoundError', () =>
+      Effect.sync(() => notFound()),
     ),
   );
-
-  if (product === null) {
-    notFound();
-  }
-
-  return product;
 }
+
+// ---------------------------------------------------------------------------
+// Metadata
+// ---------------------------------------------------------------------------
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ product: string }>;
+  params: Promise<{ category: string; product: string }>;
 }): Promise<Metadata> {
-  const productId = (await params).product;
-  const product = await fetchProductOrNotFound(productId);
+  const { product: productId } = await params;
+  const product = await appRuntime.runPromise(
+    fetchProductOrNotFound(productId),
+  );
 
   return {
     title: product.name,
@@ -69,13 +77,19 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProductPage({
-  params,
-}: {
-  params: Promise<{ product: string }>;
-}) {
-  const productId = (await params).product;
-  const product = await fetchProductOrNotFound(productId);
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
+
+type ProductPageProps = {
+  params: Promise<{ category: string; product: string }>;
+};
+
+export default async function ProductPage({ params }: ProductPageProps) {
+  const { product: productId } = await params;
+  const product = await appRuntime.runPromise(
+    fetchProductOrNotFound(productId),
+  );
 
   return (
     <main className="bg-muted">
