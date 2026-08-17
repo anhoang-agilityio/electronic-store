@@ -45,9 +45,9 @@ function parsePrice(value: string | undefined, fallback: number): number {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ categoryId: string }>;
+  params: Promise<{ category: string }>;
 }): Promise<Metadata> {
-  const { categoryId } = await params;
+  const { category: categoryId } = await params;
   const category = await appRuntime.runPromise(
     fetchCategoryOrNotFound(categoryId),
   );
