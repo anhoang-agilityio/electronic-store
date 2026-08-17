@@ -3,18 +3,70 @@ import { Context, Effect, Layer, Schema } from 'effect';
 
 import { ApiClient } from '@/lib/api-client';
 import { buildUrlWithParams } from '@/lib/url';
-import type {
-  BestsellerProductParams,
-  DiscountedProductParams,
-  FeaturedProductParams,
-  NewArrivalProductParams,
-  ProductListParams,
-  ProductListResponse,
-  SearchParams,
-  SearchResponse,
-} from '@/types/api';
 
 import { Product } from '../domain';
+
+type PaginationParams = {
+  page?: number;
+  pageSize?: number;
+};
+
+export const SortSchema = Schema.Literal(
+  'rating_asc',
+  'rating_desc',
+  'price_asc',
+  'price_desc',
+);
+
+export type Sort = Schema.Schema.Type<typeof SortSchema>;
+
+type SortParams = {
+  sort?: Sort;
+};
+
+type PriceFilterParams = {
+  minPrice?: number;
+  maxPrice?: number;
+};
+
+type ProductCategoryParams = {
+  category?: string;
+};
+
+type ProductLimitParams = {
+  limit?: number;
+};
+
+type BrandFilterParams = {
+  brands?: string | string[];
+};
+
+export type ProductListParams = PaginationParams &
+  SortParams &
+  PriceFilterParams &
+  BrandFilterParams &
+  Required<ProductCategoryParams>;
+
+export type SearchParams = PaginationParams &
+  SortParams &
+  PriceFilterParams &
+  BrandFilterParams &
+  ProductCategoryParams & {
+    q: string;
+  };
+
+export type DiscountedProductParams = ProductCategoryParams &
+  ProductLimitParams & {
+    minDiscount?: number;
+  };
+
+export type FeaturedProductParams = ProductCategoryParams & ProductLimitParams;
+
+export type BestsellerProductParams = ProductCategoryParams &
+  ProductLimitParams;
+
+export type NewArrivalProductParams = ProductCategoryParams &
+  ProductLimitParams;
 
 class ProductNotFound extends Schema.TaggedError<ProductNotFound>(
   'ProductNotFoundError',
@@ -59,6 +111,12 @@ const SearchResponseSchema = Schema.Struct({
   products: Schema.mutable(Schema.Array(Product)),
   query: Schema.String,
 });
+
+export type ProductListResponse = Schema.Schema.Type<
+  typeof ProductListResponseSchema
+>;
+
+export type SearchResponse = Schema.Schema.Type<typeof SearchResponseSchema>;
 
 const ProductsSchema = Schema.mutable(Schema.Array(Product));
 

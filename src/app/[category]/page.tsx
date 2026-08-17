@@ -9,9 +9,11 @@ import { ProductFilter } from '@/features/product/components/product-filter';
 import { ProductGrid } from '@/features/product/components/product-layout';
 import { ProductSort } from '@/features/product/components/product-sort';
 import { toProductCard } from '@/features/product/mappers/product-mapper';
-import { ProductService } from '@/features/product/service/product-service';
+import {
+  ProductService,
+  type Sort,
+} from '@/features/product/service/product-service';
 import { appRuntime } from '@/lib/effect/runtime';
-import type { Sort } from '@/types/api';
 
 // ---------------------------------------------------------------------------
 // Helpers

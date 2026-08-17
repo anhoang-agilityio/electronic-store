@@ -1,9 +1,12 @@
 import { Cause, Data, Duration, Effect, Fiber } from 'effect';
 import * as React from 'react';
 
-import { ProductService } from '@/features/product/service/product-service';
+import type { Product } from '@/features/product/domain';
+import {
+  ProductService,
+  type SearchParams,
+} from '@/features/product/service/product-service';
 import { appRuntime } from '@/lib/effect/runtime';
-import type { Product, SearchParams } from '@/types/api';
 
 /** Distinct timeout error — kept in the failure channel. */
 export class SearchTimeoutError extends Data.TaggedError('SearchTimeoutError')<{

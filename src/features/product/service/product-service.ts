@@ -1,6 +1,19 @@
 import { Context, Effect, Layer } from 'effect';
 
-import type {
+import type { Product } from '../domain';
+import {
+  ProductRepository,
+  type BestsellerProductParams,
+  type DiscountedProductParams,
+  type FeaturedProductParams,
+  type NewArrivalProductParams,
+  type ProductListParams,
+  type ProductListResponse,
+  type SearchParams,
+  type SearchResponse,
+} from '../repository/product-repository';
+
+export type {
   BestsellerProductParams,
   DiscountedProductParams,
   FeaturedProductParams,
@@ -9,10 +22,8 @@ import type {
   ProductListResponse,
   SearchParams,
   SearchResponse,
-} from '@/types/api';
-
-import type { Product } from '../domain';
-import { ProductRepository } from '../repository/product-repository';
+  Sort,
+} from '../repository/product-repository';
 
 type GetProductsError = ProductRepository.FindAllError;
 type GetProductError = ProductRepository.FindByIdError;
