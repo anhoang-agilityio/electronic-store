@@ -2,6 +2,7 @@ import { Effect } from 'effect';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { Brand } from '@/features/brand/domain';
 import { BrandService } from '@/features/brand/service/brand-service';
 import { CategoryService } from '@/features/category/service/category-service';
 import { ProductFilter } from '@/features/product/components/product-filter';
@@ -93,7 +94,9 @@ export default async function CategoryPage({
 
       return yield* Effect.all(
         {
-          brands: brandService.getBrands({ category }),
+          brands: brandService
+            .getBrands({ category })
+            .pipe(Effect.map((brands) => brands.map((b) => Brand.toPlain(b)))),
           data: productService.getProducts({
             category,
             page,

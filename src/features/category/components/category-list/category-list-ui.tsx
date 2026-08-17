@@ -16,7 +16,7 @@ import { useBreakpoints } from '@/hooks/use-breakpoints';
 import { chunkArray } from '@/utils/array';
 
 type CategoryListUIProps = {
-  categories: Category[];
+  categories: (typeof Category.Encoded)[];
 };
 
 export function CategoryListUI({ categories }: CategoryListUIProps) {

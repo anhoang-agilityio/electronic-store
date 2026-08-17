@@ -25,7 +25,7 @@ import { withSuspense } from '@/components/utils/with-suspense';
 import type { Brand } from '@/features/brand/domain';
 import { useBreakpoints } from '@/hooks/use-breakpoints';
 
-type BrandFilterOption = Pick<Brand, 'id' | 'name'>;
+type BrandFilterOption = Pick<typeof Brand.Encoded, 'id' | 'name'>;
 
 type ProductFilterPanelProps = {
   price: [number, number];

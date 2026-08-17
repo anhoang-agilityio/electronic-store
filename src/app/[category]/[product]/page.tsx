@@ -12,6 +12,7 @@ import { ProductRating } from '@/features/product/components/product-rating';
 import { ProductRatingSchedule } from '@/features/product/components/product-rating-schedule';
 import { ProductRelated } from '@/features/product/components/product-related';
 import { ProductReview } from '@/features/product/components/product-review';
+import { Product } from '@/features/product/domain';
 import { ProductService } from '@/features/product/service/product-service';
 import { appRuntime } from '@/lib/effect/runtime';
 import { getDiscountedPrice } from '@/utils/price';
@@ -88,7 +89,9 @@ type ProductPageProps = {
 export default async function ProductPage({ params }: ProductPageProps) {
   const { product: productId } = await params;
   const product = await appRuntime.runPromise(
-    fetchProductOrNotFound(productId),
+    fetchProductOrNotFound(productId).pipe(
+      Effect.map((p) => Product.toPlain(p)),
+    ),
   );
 
   return (

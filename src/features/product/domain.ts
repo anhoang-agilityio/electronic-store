@@ -33,4 +33,8 @@ export class Product extends Schema.Class<Product>('Product')({
   isBestseller: Schema.optional(Schema.Boolean),
   isFeatured: Schema.optional(Schema.Boolean),
   isDiscount: Schema.optional(Schema.Boolean),
-}) {}
+}) {
+  static toPlain(self: Product): typeof Product.Encoded {
+    return Schema.encodeSync(Product)(self);
+  }
+}
