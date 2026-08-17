@@ -177,7 +177,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <h2 className="text-2xl font-medium">Review</h2>
             <div className="flex flex-col md:flex-row gap-15 md:items-center">
               <ProductRating
-                rating={product.rating}
+                rating={product.rating ?? 0}
                 reviewCount={product.reviews.length}
               />
               <ProductRatingSchedule

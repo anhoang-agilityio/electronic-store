@@ -45,15 +45,14 @@ function mapError(operation: string) {
 }
 
 // Response schemas for list/search — decoded from Product domain
-const ProductListResponseSchema: Schema.Schema<ProductListResponse> =
-  Schema.Struct({
-    total: Schema.Number,
-    page: Schema.Number,
-    pageSize: Schema.Number,
-    products: Schema.mutable(Schema.Array(Product)),
-  });
+const ProductListResponseSchema = Schema.Struct({
+  total: Schema.Number,
+  page: Schema.Number,
+  pageSize: Schema.Number,
+  products: Schema.mutable(Schema.Array(Product)),
+});
 
-const SearchResponseSchema: Schema.Schema<SearchResponse> = Schema.Struct({
+const SearchResponseSchema = Schema.Struct({
   total: Schema.Number,
   page: Schema.Number,
   pageSize: Schema.Number,
