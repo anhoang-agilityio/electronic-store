@@ -123,10 +123,4 @@ export const defaultLayer = layer.pipe(
   Layer.provide(PublicConfig.layer),
 );
 
-/** Resolves the configured API client from the calling Effect environment. */
-export const apiTransport = Effect.fn('ApiClient.apiTransport')(
-  (path: string, options: TransportOptions = {}) =>
-    Effect.flatMap(Service, (client) => client.request(path, options)),
-);
-
 export * as ApiClient from './api-client';
