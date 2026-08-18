@@ -1,28 +1,19 @@
 'use client';
 
-import * as React from 'react';
-
 import { RadioGroup } from '@/components/ui/radio-group';
-import {
-  useCurrentUserAddresses,
-  useCurrentCheckout,
-  useUserStore,
-} from '@/stores/user-store';
+import { useCurrentAddresses } from '@/features/address/hooks/use-addresses';
+import { useCurrentCheckout } from '@/features/checkout/hooks/use-checkout';
+import { useCheckoutActions } from '@/features/checkout/hooks/use-checkout-actions';
 
 import { AddressCard } from './address-card';
 
 export function UserAddressList() {
-  const addresses = useCurrentUserAddresses();
+  const addresses = useCurrentAddresses();
   const checkout = useCurrentCheckout();
-  const setCheckoutAddress = useUserStore((s) => s.setCheckoutAddress);
+  const { setAddress } = useCheckoutActions();
+  const selectedId = checkout?.address?.id ?? null;
 
-  // Get the id of checkout address if available, fallback to addresses[0]?.id
-  const initialSelectedId = checkout?.address?.id ?? null;
-  const [selectedId, setSelectedId] = React.useState<string | null>(
-    initialSelectedId,
-  );
-
-  if (!addresses.length) {
+  if (addresses.length === 0) {
     return (
       <div className="py-8 text-center text-muted-foreground">
         <h1 className="sr-only">No address found</h1>
@@ -37,9 +28,8 @@ export function UserAddressList() {
       <RadioGroup
         value={selectedId}
         onValueChange={(id) => {
-          setSelectedId(id);
-          const address = addresses.find((a) => a.id === id) ?? null;
-          setCheckoutAddress(address);
+          const address = addresses.find((item) => item.id === id) ?? null;
+          void setAddress(address);
         }}
         className="gap-4"
       >

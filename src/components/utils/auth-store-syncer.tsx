@@ -3,28 +3,22 @@
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 
-import { useUserStore } from '@/stores/user-store';
+import { useSessionStore } from '@/features/session/store/session-store';
 
 /**
- *
- * This hook synchronizes the authentication state from NextAuth with the app's internal user store.
- * - When the user successfully logs in (session.user.id exists), it automatically calls setCurrentUser to store the userId.
- * - When the user logs out (session.user.id is missing), it automatically calls clearCurrentUser to remove the userId from the store.
- *
+ * Synchronizes the NextAuth session with the app's client-side session store.
  */
 const useAuthStore = () => {
   const { data: session, status } = useSession();
-  const setCurrentUser = useUserStore((s) => s.setCurrentUser);
-  const clearCurrentUser = useUserStore((s) => s.clearCurrentUser);
+  const setCurrentUser = useSessionStore((state) => state.setCurrentUser);
+  const clearCurrentUser = useSessionStore((state) => state.clearCurrentUser);
 
   useEffect(() => {
     if (status === 'loading') return;
 
     if (session?.user?.id) {
-      // User is logged in, set current user
       setCurrentUser(session.user.id);
     } else {
-      // User is not logged in, clear current user
       clearCurrentUser();
     }
   }, [session?.user?.id, status, setCurrentUser, clearCurrentUser]);

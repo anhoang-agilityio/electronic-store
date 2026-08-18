@@ -1,3 +1,5 @@
+'use client';
+
 import { Edit } from 'lucide-react';
 import React, { useState } from 'react';
 
@@ -10,48 +12,51 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { useUserStore, useCurrentCheckout } from '@/stores/user-store';
-import type { Address } from '@/types/store';
+import type { Address } from '@/features/address/domain';
+import { useAddressActions } from '@/features/address/hooks/use-address-actions';
+import { useCurrentCheckout } from '@/features/checkout/hooks/use-checkout';
+import { useCheckoutActions } from '@/features/checkout/hooks/use-checkout-actions';
 
 import { AddressForm, AddressFormValues } from './address-form';
 
 export function EditAddress({ address }: { address: Address }) {
   const [open, setOpen] = useState(false);
-  const updateAddress = useUserStore((s) => s.updateAddress);
+  const { updateAddress } = useAddressActions();
+  const { setAddress } = useCheckoutActions();
   const checkout = useCurrentCheckout();
-  const setCheckoutAddress = useUserStore((s) => s.setCheckoutAddress);
 
   const handleEditSubmit = (values: AddressFormValues) => {
-    updateAddress(address.id, values);
-    if (checkout?.address?.id === address.id) {
-      setCheckoutAddress({ ...address, ...values });
-    }
-    setOpen(false);
+    void updateAddress(address.id, values).then((updatedAddress) => {
+      if (!updatedAddress) return;
+
+      if (checkout?.address?.id === address.id) {
+        void setAddress(updatedAddress);
+      }
+      setOpen(false);
+    });
   };
 
   return (
-    <>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button variant="ghost" size="icon-circle" aria-label="Edit address">
-            <Edit />
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Address</DialogTitle>
-          </DialogHeader>
-          <DialogDescription className="sr-only">
-            Edit address form
-          </DialogDescription>
-          <AddressForm
-            initialValues={address}
-            onSubmit={handleEditSubmit}
-            onCancel={() => setOpen(false)}
-            submitText="Save"
-          />
-        </DialogContent>
-      </Dialog>
-    </>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="icon-circle" aria-label="Edit address">
+          <Edit />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit Address</DialogTitle>
+        </DialogHeader>
+        <DialogDescription className="sr-only">
+          Edit address form
+        </DialogDescription>
+        <AddressForm
+          initialValues={address}
+          onSubmit={handleEditSubmit}
+          onCancel={() => setOpen(false)}
+          submitText="Save"
+        />
+      </DialogContent>
+    </Dialog>
   );
 }

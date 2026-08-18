@@ -13,9 +13,9 @@ import { ProductRatingSchedule } from '@/features/product/components/product-rat
 import { ProductRelated } from '@/features/product/components/product-related';
 import { ProductReview } from '@/features/product/components/product-review';
 import { Product } from '@/features/product/domain';
+import { getDiscountedPrice } from '@/features/product/pricing';
 import { ProductService } from '@/features/product/service/product-service';
 import { appRuntime } from '@/lib/effect/runtime';
-import { getDiscountedPrice } from '@/utils/price';
 import { snakeToTitleCase } from '@/utils/string';
 
 // ---------------------------------------------------------------------------

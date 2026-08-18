@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { RadioGroupItem } from '@/components/ui/radio-group';
-import type { ShipmentInfo } from '@/types/store';
+import type { ShipmentInfo } from '@/features/shipment/domain';
 
 export type ShipmentMethodCardProps = {
   shipment: ShipmentInfo;

@@ -5,30 +5,24 @@ import Image from 'next/image';
 import React from 'react';
 
 import { Button } from '@/components/ui/button';
-import { useUserStore } from '@/stores/user-store';
-import type { CartItem } from '@/types/store';
+import type { CartItem } from '@/features/cart/domain';
+import { useCartActions } from '@/features/cart/hooks/use-cart-actions';
 
 export type CartProductProps = {
-  product: CartItem['product'];
-  quantity: number;
+  item: CartItem;
 };
 
-export function CartProduct({ product, quantity }: CartProductProps) {
-  const updateCartItemQuantity = useUserStore((s) => s.updateCartItemQuantity);
-  const removeFromCart = useUserStore((s) => s.removeFromCart);
+export function CartProduct({ item }: CartProductProps) {
+  const { product, quantity } = item;
+  const { changeQuantity, removeItem } = useCartActions();
 
   const handleQuantityChange = (newQuantity: number) => {
     if (newQuantity < 1) return;
-    updateCartItemQuantity(product.id, newQuantity);
-  };
-
-  const handleRemove = () => {
-    removeFromCart(product.id);
+    void changeQuantity(product.id, newQuantity);
   };
 
   return (
     <div className="flex items-center gap-4 py-4">
-      {/* Product Image */}
       <div className="relative size-22 flex-shrink-0">
         <Image
           src={product.image}
@@ -38,9 +32,7 @@ export function CartProduct({ product, quantity }: CartProductProps) {
         />
       </div>
 
-      {/* Content */}
       <div className="flex flex-col sm:flex-row gap-4 flex-1 justify-between sm:items-center">
-        {/* Product Info */}
         <div className="flex-1 space-y-2">
           <h2 className="font-medium leading-tight line-clamp-3">
             {product.name}
@@ -48,9 +40,7 @@ export function CartProduct({ product, quantity }: CartProductProps) {
           <p className="text-sm">#{product.id}</p>
         </div>
 
-        {/* Counter, Price, Remove */}
         <div className="flex items-center justify-between sm:gap-6">
-          {/* Quantity Counter */}
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
@@ -76,16 +66,14 @@ export function CartProduct({ product, quantity }: CartProductProps) {
             </Button>
           </div>
 
-          {/* Price */}
           <div className="font-medium text-xl min-w-16">
-            ${(product.price * quantity).toLocaleString()}
+            ${item.getSubtotal().toLocaleString()}
           </div>
 
-          {/* Remove Button */}
           <Button
             variant="ghost"
             size="icon-circle"
-            onClick={handleRemove}
+            onClick={() => void removeItem(product.id)}
             className="size-8"
           >
             <X />

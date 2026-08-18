@@ -1,27 +1,31 @@
+'use client';
+
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { paths } from '@/config/paths';
-import { useUserStore } from '@/stores/user-store';
-import type { CartItem } from '@/types/store';
-import { getCartSubtotal, getEstimatedTax } from '@/utils/price';
+import type { Cart } from '@/features/cart/domain';
+import { Checkout } from '@/features/checkout/domain';
+import { useCheckoutActions } from '@/features/checkout/hooks/use-checkout-actions';
 
 export type CartSummaryProps = {
-  cart: CartItem[];
+  cart: Cart;
 };
 
 export function CartSummary({ cart }: CartSummaryProps) {
-  const setCheckoutProducts = useUserStore((s) => s.setCheckoutProducts);
+  const { startCheckout } = useCheckoutActions();
   const router = useRouter();
 
-  const handleCheckout = () => {
-    setCheckoutProducts(cart);
-    router.push(paths.checkout.step1.getHref());
-  };
-  const subtotal = getCartSubtotal(cart);
-  const estimatedTax = getEstimatedTax(subtotal);
+  const subtotal = cart.getSubtotal();
+  const estimatedTax = Checkout.getEstimatedTax(subtotal);
   const total = subtotal + estimatedTax;
+
+  const handleCheckout = () => {
+    void startCheckout().then((started) => {
+      if (started) router.push(paths.checkout.step1.getHref());
+    });
+  };
 
   return (
     <section className="px-4 sm:px-16 py-14 rounded-lg border border-gray-100 shadow-md">

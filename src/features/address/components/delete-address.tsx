@@ -1,23 +1,30 @@
+'use client';
+
 import { X } from 'lucide-react';
 import React, { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
-import { useUserStore, useCurrentCheckout } from '@/stores/user-store';
-import type { Address } from '@/types/store';
+import type { Address } from '@/features/address/domain';
+import { useAddressActions } from '@/features/address/hooks/use-address-actions';
+import { useCurrentCheckout } from '@/features/checkout/hooks/use-checkout';
+import { useCheckoutActions } from '@/features/checkout/hooks/use-checkout-actions';
 
 export function DeleteAddress({ address }: { address: Address }) {
   const [open, setOpen] = useState(false);
-  const removeAddress = useUserStore((s) => s.removeAddress);
+  const { removeAddress } = useAddressActions();
+  const { clearAddress } = useCheckoutActions();
   const checkout = useCurrentCheckout();
-  const clearCheckoutAddress = useUserStore((s) => s.clearCheckoutAddress);
 
   const handleDelete = () => {
-    removeAddress(address.id);
-    if (checkout?.address?.id === address.id) {
-      clearCheckoutAddress();
-    }
-    setOpen(false);
+    void removeAddress(address.id).then((removed) => {
+      if (!removed) return;
+
+      if (checkout?.address?.id === address.id) {
+        void clearAddress();
+      }
+      setOpen(false);
+    });
   };
 
   return (

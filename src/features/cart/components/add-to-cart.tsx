@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -8,29 +8,32 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { paths } from '@/config/paths';
-import { useUserStore } from '@/stores/user-store';
-import type { CartItem } from '@/types/store';
+import type { CartProductSnapshotData } from '@/features/cart/domain';
+import { useCartActions } from '@/features/cart/hooks/use-cart-actions';
+import { useSessionStore } from '@/features/session/store/session-store';
 
 export type AddToCartProps = {
-  product: CartItem['product'];
+  product: CartProductSnapshotData;
 };
 
 export function AddToCart({ product }: AddToCartProps) {
   const { data: session } = useSession();
-  const addToCart = useUserStore((s) => s.addToCart);
-  const setCurrentUser = useUserStore((s) => s.setCurrentUser);
+  const { addItem } = useCartActions();
+  const setCurrentUser = useSessionStore((state) => state.setCurrentUser);
   const router = useRouter();
   const pathname = usePathname();
   const [showDialog, setShowDialog] = useState(false);
 
   const handleAddToCart = () => {
-    if (session?.user?.id) {
-      setCurrentUser(session.user.id);
-      addToCart(product);
-      toast.success(`Added "${product.name}" to cart!`);
-    } else {
+    if (!session?.user?.id) {
       setShowDialog(true);
+      return;
     }
+
+    setCurrentUser(session.user.id);
+    void addItem(product).then((added) => {
+      if (added) toast.success(`Added "${product.name}" to cart!`);
+    });
   };
 
   const handleConfirmLogin = () => {

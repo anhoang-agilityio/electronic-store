@@ -3,15 +3,24 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import React from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import { useUserStore } from '@/stores/user-store';
-import { creditCardInfoSchema, CreditCardInfo } from '@/types/store';
+import { useCheckoutActions } from '@/features/checkout/hooks/use-checkout-actions';
 
 import { StepActions } from './step-actions';
 
+const creditCardInfoSchema = z.object({
+  cardholderName: z.string().min(1, 'Cardholder name is required'),
+  cardNumber: z.string().regex(/^[0-9]{10}$/, 'Card number must be 10 digits'),
+  expiryDate: z.string().regex(/^(0[1-9]|1[0-2])\/(\d{2})$/, 'Format MM/YY'),
+  cvv: z.string().regex(/^[0-9]{3,4}$/, 'CVV must be 3 or 4 digits'),
+});
+
+type CreditCardFormValues = z.infer<typeof creditCardInfoSchema>;
+
 export function CheckoutPaymentPanel() {
-  const methods = useForm<CreditCardInfo>({
+  const methods = useForm<CreditCardFormValues>({
     resolver: zodResolver(creditCardInfoSchema),
     mode: 'onTouched',
     defaultValues: {
@@ -21,22 +30,16 @@ export function CheckoutPaymentPanel() {
       cvv: '',
     },
   });
+  const { setCreditCard } = useCheckoutActions();
 
-  // Get the action to update credit card info in user store
-  const setCheckoutCreditCard = useUserStore((s) => s.setCheckoutCreditCard);
-
-  // Callback when form is successfully submitted
-  const handleCreditCardSubmit = () => {
-    const data = methods.getValues();
-    setCheckoutCreditCard(data);
+  const handleCreditCardSubmit = (data: CreditCardFormValues) => {
+    void setCreditCard(data);
   };
 
   return (
     <FormProvider {...methods}>
       <div className="flex flex-col gap-10 w-full p-8">
-        {/* Payment Title */}
         <h1 className="font-bold text-xl">Payment</h1>
-        {/* Credit Card Image */}
         <Image
           src="/credit-card.png"
           alt="Credit Card"
@@ -44,10 +47,9 @@ export function CheckoutPaymentPanel() {
           height={190}
           className="object-cover rounded-lg"
         />
-        {/* Payment Fields */}
         <form
           className="flex flex-col gap-4"
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={(event) => event.preventDefault()}
         >
           <div className="border rounded-md flex flex-col px-4 h-12 justify-center">
             <input
@@ -104,7 +106,6 @@ export function CheckoutPaymentPanel() {
             </div>
           </div>
         </form>
-        {/* Step Actions */}
         <div className="mt-8">
           <StepActions
             currentStep={3}

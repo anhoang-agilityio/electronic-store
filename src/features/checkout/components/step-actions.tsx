@@ -8,7 +8,8 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { paths } from '@/config/paths';
-import { useUserStore, useCurrentCheckout } from '@/stores/user-store';
+import { useCurrentCheckout } from '@/features/checkout/hooks/use-checkout';
+import { useCheckoutActions } from '@/features/checkout/hooks/use-checkout-actions';
 
 type ValidStep = 1 | 2 | 3;
 
@@ -19,35 +20,26 @@ type StepActionsProps = {
 
 export function StepActions({ currentStep, onPaySubmit }: StepActionsProps) {
   const router = useRouter();
-  // Only use its value for step 3
   const formContext = useFormContext();
-
-  const clearCheckout = useUserStore((s) => s.clearCheckout);
-  const clearCart = useUserStore((s) => s.clearCart);
+  const { completeCheckout } = useCheckoutActions();
+  const checkout = useCurrentCheckout();
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [payLoading, setPayLoading] = React.useState(false);
 
-  const checkout = useCurrentCheckout();
-  const checkoutProducts = checkout?.products ?? [];
-  const checkoutAddress = checkout?.address;
-  const checkoutShipping = checkout?.shipment;
+  const hasProducts = (checkout?.products.length ?? 0) > 0;
+  const hasAddress = Boolean(checkout?.address);
+  const hasShipping = Boolean(checkout?.shipment);
 
-  const hasProducts = checkoutProducts.length > 0;
-  const hasAddress = !!checkoutAddress;
-  const hasShipping = !!checkoutShipping;
-
-  // Handle Back button click
   function handleBack() {
     if (currentStep === 1) {
       router.push(paths.cart.getHref());
-    } else if (currentStep > 1) {
+    } else {
       router.push(
         paths.checkout.step((currentStep - 1) as ValidStep).getHref(),
       );
     }
   }
 
-  // Handle Next button click
   function handleNext() {
     if (currentStep < 3) {
       router.push(
@@ -56,37 +48,37 @@ export function StepActions({ currentStep, onPaySubmit }: StepActionsProps) {
     }
   }
 
-  // Handle Pay button click (submit form first)
   function handlePay() {
-    if (onPaySubmit) onPaySubmit();
+    onPaySubmit?.();
     setConfirmOpen(true);
   }
 
-  // Confirm payment: clear checkout & cart, then navigate home
   function handleConfirmPay() {
     setPayLoading(true);
     setTimeout(() => {
-      clearCheckout();
-      clearCart();
-      setPayLoading(false);
-      setConfirmOpen(false);
-      toast.success('Payment successful!');
-      router.push(paths.home.getHref());
-    }, 600); // Simulate processing
+      void completeCheckout().then((completed) => {
+        if (!completed) return;
+
+        setPayLoading(false);
+        setConfirmOpen(false);
+        toast.success('Payment successful!');
+        router.push(paths.home.getHref());
+      });
+    }, 600);
   }
 
-  // Disable conditions for each step
   let nextDisabled = false;
   if (currentStep === 1) {
     nextDisabled = !hasProducts || !hasAddress;
   } else if (currentStep === 2) {
     nextDisabled = !hasProducts || !hasAddress || !hasShipping;
   }
+
   const payDisabled =
     !hasProducts ||
     !hasAddress ||
     !hasShipping ||
-    (currentStep === 3 ? !formContext.formState.isValid : false);
+    (currentStep === 3 && !formContext.formState.isValid);
 
   return (
     <div className="w-full flex gap-6 justify-end">

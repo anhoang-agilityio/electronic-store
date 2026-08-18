@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Badge } from '@/components/ui/badge';
 import { RadioGroupItem } from '@/components/ui/radio-group';
-import type { Address } from '@/types/store';
+import type { Address } from '@/features/address/domain';
 
 import { DeleteAddress } from './delete-address';
 import { EditAddress } from './edit-address';

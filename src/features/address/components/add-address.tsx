@@ -10,22 +10,22 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useUserStore } from '@/stores/user-store';
+import { useAddressActions } from '@/features/address/hooks/use-address-actions';
 
 import { AddressForm, AddressFormValues } from './address-form';
 
 export function AddAddress() {
   const [open, setOpen] = React.useState(false);
-  const addAddress = useUserStore((s) => s.addAddress);
+  const { addAddress } = useAddressActions();
 
   function onSubmit(data: AddressFormValues) {
-    addAddress(data);
-    setOpen(false);
+    void addAddress(data).then((address) => {
+      if (address) setOpen(false);
+    });
   }
 
   return (
     <>
-      {/* Add New Address Button */}
       <section className="w-full flex flex-col items-center">
         <div className="flex items-center w-full">
           <div className="flex-1 h-px bg-gradient-to-l from-black to-gray-200" />
@@ -45,7 +45,6 @@ export function AddAddress() {
         </span>
       </section>
 
-      {/* Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
@@ -56,9 +55,7 @@ export function AddAddress() {
           </DialogDescription>
           <AddressForm
             onSubmit={onSubmit}
-            onCancel={() => {
-              setOpen(false);
-            }}
+            onCancel={() => setOpen(false)}
             submitText="Save"
           />
         </DialogContent>
