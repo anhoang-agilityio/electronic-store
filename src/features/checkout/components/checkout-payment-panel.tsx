@@ -1,27 +1,21 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import Image from 'next/image';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { z } from 'zod';
 
+import {
+  CreditCardInfo,
+  type CreditCardInfoData,
+} from '@/features/checkout/domain';
 import { useCheckoutActions } from '@/features/checkout/hooks/use-checkout-actions';
 
 import { StepActions } from './step-actions';
 
-const creditCardInfoSchema = z.object({
-  cardholderName: z.string().min(1, 'Cardholder name is required'),
-  cardNumber: z.string().regex(/^[0-9]{10}$/, 'Card number must be 10 digits'),
-  expiryDate: z.string().regex(/^(0[1-9]|1[0-2])\/(\d{2})$/, 'Format MM/YY'),
-  cvv: z.string().regex(/^[0-9]{3,4}$/, 'CVV must be 3 or 4 digits'),
-});
-
-type CreditCardFormValues = z.infer<typeof creditCardInfoSchema>;
-
 export function CheckoutPaymentPanel() {
-  const methods = useForm<CreditCardFormValues>({
-    resolver: zodResolver(creditCardInfoSchema),
+  const methods = useForm<CreditCardInfoData, unknown, CreditCardInfo>({
+    resolver: effectTsResolver(CreditCardInfo),
     mode: 'onTouched',
     defaultValues: {
       cardholderName: '',
@@ -32,7 +26,7 @@ export function CheckoutPaymentPanel() {
   });
   const { setCreditCard } = useCheckoutActions();
 
-  const handleCreditCardSubmit = (data: CreditCardFormValues) => {
+  const handleCreditCardSubmit = (data: CreditCardInfo) => {
     void setCreditCard(data);
   };
 

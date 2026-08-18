@@ -1,25 +1,31 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
+import { Schema } from 'effect';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { withSuspense } from '@/components/utils/with-suspense';
 
-const SignInSchema = z.object({
-  email: z.string().email({ message: 'Please enter a valid email address.' }),
-  password: z
-    .string()
-    .min(6, { message: 'Password must be at least 6 characters.' }),
+const SignInSchema = Schema.Struct({
+  email: Schema.String.pipe(
+    Schema.filter((value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value), {
+      message: () => 'Please enter a valid email address.',
+    }),
+  ),
+  password: Schema.String.pipe(
+    Schema.minLength(6, {
+      message: () => 'Password must be at least 6 characters.',
+    }),
+  ),
 });
 
-type SignInFormValues = z.infer<typeof SignInSchema>;
+type SignInFormValues = typeof SignInSchema.Type;
 
 const SignInPage = withSuspense(function () {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +40,7 @@ const SignInPage = withSuspense(function () {
     handleSubmit,
     formState: { errors },
   } = useForm<SignInFormValues>({
-    resolver: zodResolver(SignInSchema),
+    resolver: effectTsResolver(SignInSchema),
     defaultValues: {
       email: '',
       password: '',

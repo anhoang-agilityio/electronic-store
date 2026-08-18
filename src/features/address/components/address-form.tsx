@@ -1,23 +1,29 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import { effectTsResolver } from '@hookform/resolvers/effect-ts';
+import { Schema } from 'effect';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-const addressSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  address: z.string().min(1, 'Address is required'),
-  phone: z.string().min(1, 'Phone is required'),
-  tag: z.string().optional(),
+const addressSchema = Schema.Struct({
+  title: Schema.String.pipe(
+    Schema.nonEmptyString({ message: () => 'Title is required' }),
+  ),
+  address: Schema.String.pipe(
+    Schema.nonEmptyString({ message: () => 'Address is required' }),
+  ),
+  phone: Schema.String.pipe(
+    Schema.nonEmptyString({ message: () => 'Phone is required' }),
+  ),
+  tag: Schema.optional(Schema.String),
 });
 
-export type AddressFormValues = z.infer<typeof addressSchema>;
+export type AddressFormValues = typeof addressSchema.Type;
 
 export type AddressFormProps = {
   initialValues?: AddressFormValues;
@@ -37,7 +43,7 @@ export function AddressForm({
     handleSubmit,
     formState: { errors },
   } = useForm<AddressFormValues>({
-    resolver: zodResolver(addressSchema),
+    resolver: effectTsResolver(addressSchema),
     defaultValues: initialValues ?? {
       title: '',
       address: '',

@@ -9,10 +9,24 @@ const ESTIMATED_TAX_RATE = 0.08;
 export class CreditCardInfo extends Schema.Class<CreditCardInfo>(
   'CreditCardInfo',
 )({
-  cardholderName: Schema.String.pipe(Schema.nonEmptyString()),
-  cardNumber: Schema.String.pipe(Schema.pattern(/^[0-9]{10}$/)),
-  expiryDate: Schema.String.pipe(Schema.pattern(/^(0[1-9]|1[0-2])\/(\d{2})$/)),
-  cvv: Schema.String.pipe(Schema.pattern(/^[0-9]{3,4}$/)),
+  cardholderName: Schema.String.pipe(
+    Schema.nonEmptyString({ message: () => 'Cardholder name is required' }),
+  ),
+  cardNumber: Schema.String.pipe(
+    Schema.pattern(/^[0-9]{10}$/, {
+      message: () => 'Card number must be 10 digits',
+    }),
+  ),
+  expiryDate: Schema.String.pipe(
+    Schema.pattern(/^(0[1-9]|1[0-2])\/(\d{2})$/, {
+      message: () => 'Format MM/YY',
+    }),
+  ),
+  cvv: Schema.String.pipe(
+    Schema.pattern(/^[0-9]{3,4}$/, {
+      message: () => 'CVV must be 3 or 4 digits',
+    }),
+  ),
 }) {}
 
 export class Checkout extends Schema.Class<Checkout>('Checkout')({
