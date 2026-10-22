@@ -12,8 +12,8 @@ fi
 command=$(jq -r '.tool_input.command // empty')
 [[ -z "$command" ]] && exit 0
 
-# Collapse newlines and repeated spaces so patterns match reliably.
-normalized=$(printf '%s' "$command" | tr '\n\t' '  ' | tr -s ' ')
+# Collapse newlines and repeated spaces, and drop quotes so "$HOME" or '/' match too.
+normalized=$(printf '%s' "$command" | tr '\n\t' '  ' | tr -d "\"'" | tr -s ' ')
 
 block() {
   echo "BLOCKED: $1" >&2
@@ -21,9 +21,16 @@ block() {
   exit 2
 }
 
-# rm -r/-f style flags against root, home, parent dir, or a bare wildcard
-if grep -Eq '(^|[;&|] *)rm +(-[a-zA-Z]*[rR][a-zA-Z]*[fF]?|-[a-zA-Z]*[fF][a-zA-Z]*[rR]?|--recursive|--force)[^;&|]* +(/|~|\$HOME|\.\.|\*)( |$|/)' <<<"$normalized"; then
-  block "recursive delete of root, home, parent dir, or a wildcard. Delete the specific paths instead."
+# Best-effort guardrail, not a sandbox: it cannot catch every way to delete files.
+# rm may start a segment, follow sudo/env/xargs or `bash -c`, and be called by path (/bin/rm).
+rm_start='(^|[;&|(`] *|-c +)((sudo|env|command|xargs|exec|nohup|time)( +-[^ ]+)* +)*([^ ;&|]*/)?rm +'
+rm_flags='(-[a-zA-Z]*[rR][a-zA-Z]*[fF]?|-[a-zA-Z]*[fF][a-zA-Z]*[rR]?|--recursive|--force)[^;&|]* +'
+# root, home, parent dir (each optionally with /*), current dir, or a bare wildcard
+rm_target='((/|~|\$HOME|\.\.)\*?([ )`/]|$)|(\.|\.?/?\*)([ )`]|$))'
+
+# rm -r/-f style flags against root, home, parent dir, current dir, or a bare wildcard
+if grep -Eq "${rm_start}${rm_flags}${rm_target}" <<<"$normalized"; then
+  block "recursive delete of root, home, parent dir, current dir, or a wildcard. Delete the specific paths instead."
 fi
 
 exit 0
