@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { useCurrentCheckout, useUserStore } from '@/stores/user-store';
 
 import { applyPromoCode } from '../api/apply-promo-code';
-import { isKnownPromoCode } from '../data/promo-codes';
 
 export function PromoCodeForm() {
   const checkout = useCurrentCheckout();
@@ -22,12 +21,6 @@ export function PromoCodeForm() {
   const handleApply = () => {
     setError('');
 
-    // Skip the request for codes that do not exist
-    if (!isKnownPromoCode(code)) {
-      setError('This promo code does not exist.');
-      return;
-    }
-
     startTransition(async () => {
       try {
         const result = await applyPromoCode({
@@ -35,7 +28,6 @@ export function PromoCodeForm() {
           items: (checkout?.products ?? []).map((item) => ({
             productId: item.product.id,
             quantity: item.quantity,
-            price: item.product.price,
           })),
         });
         setCheckoutPromoCode({ code: result.code, discount: result.discount });
