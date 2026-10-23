@@ -35,11 +35,17 @@ export const creditCardInfoSchema = z.object({
 
 export type CreditCardInfo = z.infer<typeof creditCardInfoSchema>;
 
+export type AppliedPromoCode = {
+  code: string;
+  discount: number;
+};
+
 export type Checkout = {
   products: CartItem[];
   address: Address | null;
   shipment: ShipmentInfo | null;
   creditCard: CreditCardInfo | null;
+  promoCode?: AppliedPromoCode | null;
 };
 
 export type UserData = {
