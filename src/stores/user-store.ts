@@ -7,6 +7,7 @@ import { immer } from 'zustand/middleware/immer';
 
 import {
   Address,
+  AppliedPromoCode,
   CartItem,
   CreditCardInfo,
   ShipmentInfo,
@@ -42,6 +43,7 @@ type UserStore = {
   setCheckoutAddress: (address: Address | null) => void;
   setCheckoutShipment: (shipment: ShipmentInfo | null) => void;
   setCheckoutCreditCard: (creditCard: CreditCardInfo | null) => void;
+  setCheckoutPromoCode: (promoCode: AppliedPromoCode | null) => void;
   clearCheckout: () => void;
   clearCheckoutProducts: () => void;
   clearCheckoutAddress: () => void;
@@ -212,6 +214,8 @@ export const useUserStore = create<UserStore>()(
             address: userData.checkout?.address ?? null,
             shipment: userData.checkout?.shipment ?? null,
             creditCard: userData.checkout?.creditCard ?? null,
+            // Discount was calculated for the previous products
+            promoCode: null,
           };
         });
       },
@@ -266,6 +270,24 @@ export const useUserStore = create<UserStore>()(
           };
         });
       },
+      setCheckoutPromoCode: (promoCode) => {
+        const { currentUserId } = get();
+        if (!currentUserId) return;
+
+        set((state: UserStore) => {
+          const userData = state.userData[currentUserId];
+          if (!userData) return;
+
+          userData.checkout = {
+            ...userData.checkout,
+            promoCode,
+            products: userData.checkout?.products ?? [],
+            address: userData.checkout?.address ?? null,
+            shipment: userData.checkout?.shipment ?? null,
+            creditCard: userData.checkout?.creditCard ?? null,
+          };
+        });
+      },
       clearCheckout: () => {
         const { currentUserId } = get();
         if (!currentUserId) return;
@@ -291,6 +313,7 @@ export const useUserStore = create<UserStore>()(
             address: userData.checkout?.address ?? null,
             shipment: userData.checkout?.shipment ?? null,
             creditCard: userData.checkout?.creditCard ?? null,
+            promoCode: null,
           };
         });
       },
