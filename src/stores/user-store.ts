@@ -313,6 +313,7 @@ export const useUserStore = create<UserStore>()(
             address: userData.checkout?.address ?? null,
             shipment: userData.checkout?.shipment ?? null,
             creditCard: userData.checkout?.creditCard ?? null,
+            promoCode: null,
           };
         });
       },

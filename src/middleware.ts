@@ -7,7 +7,7 @@ export default auth((req) => {
   const isLoggedIn = !!req.auth;
 
   const authRoutes = ['/auth/signin'];
-  const protectedRoutes = ['/cart', '/checkout', '/api/checkout'];
+  const protectedRoutes = ['/cart', '/checkout'];
 
   const isAuthRoute = authRoutes.some((route) =>
     nextUrl.pathname.startsWith(route),

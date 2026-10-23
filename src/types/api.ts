@@ -134,7 +134,6 @@ export type PromoCode = {
 export type ApplyPromoCodeItem = {
   productId: string;
   quantity: number;
-  price: number;
 };
 
 export type ApplyPromoCodeRequest = {

@@ -1,3 +1,5 @@
+import 'server-only';
+
 import type { PromoCode } from '@/types/api';
 
 import { normalizePromoCode } from '../utils/promo-code';
@@ -36,8 +38,4 @@ export const PROMO_CODES: PromoCode[] = [
 export function findPromoCode(code: string): PromoCode | undefined {
   const normalized = normalizePromoCode(code);
   return PROMO_CODES.find((promo) => promo.code === normalized);
-}
-
-export function isKnownPromoCode(code: string): boolean {
-  return findPromoCode(code) !== undefined;
 }
