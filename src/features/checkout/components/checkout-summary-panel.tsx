@@ -2,6 +2,7 @@
 
 import React from 'react';
 
+import { PromoCodeForm } from '@/features/promo-code/components/promo-code-form';
 import { useCurrentCheckout } from '@/stores/user-store';
 import { getCartSubtotal, getEstimatedTax } from '@/utils/price';
 
@@ -16,7 +17,8 @@ export function CheckoutSummaryPanel() {
   const subtotal = getCartSubtotal(products);
   const estimatedTax = getEstimatedTax(subtotal);
   const shippingFee = shipment ? shipment.price : 0;
-  const total = subtotal + estimatedTax + shippingFee;
+  const discount = checkout?.promoCode?.discount ?? 0;
+  const total = subtotal + estimatedTax + shippingFee - discount;
 
   return (
     <div className="flex flex-col gap-6 rounded-xl border p-8 w-full">
@@ -64,6 +66,11 @@ export function CheckoutSummaryPanel() {
           </div>
         </div>
       </div>
+      {/* Promo Code */}
+      <div className="mt-6">
+        <div className="text-sm font-medium text-gray-600 mb-1">Promo code</div>
+        <PromoCodeForm />
+      </div>
       {/* Price Info */}
       <div className="flex flex-col gap-3 mt-6">
         <div className="flex justify-between items-center">
@@ -78,6 +85,12 @@ export function CheckoutSummaryPanel() {
           <span className="text-gray-600">Estimated shipping & Handling</span>
           <span>${shippingFee}</span>
         </div>
+        {discount > 0 && (
+          <div className="flex justify-between items-center">
+            <span className="text-gray-600">Discount</span>
+            <span>-${discount}</span>
+          </div>
+        )}
         <div className="flex justify-between items-center font-medium mt-2">
           <span>Total</span>
           <span className="font-bold text-lg">${total}</span>

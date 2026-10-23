@@ -118,3 +118,33 @@ export type Product = {
   isFeatured?: boolean;
   isDiscount?: boolean;
 };
+
+// Promo code types
+export type PromoCodeType = 'percent' | 'fixed';
+
+export type PromoCode = {
+  code: string;
+  type: PromoCodeType;
+  value: number;
+  maxDiscount?: number;
+  minSubtotal?: number;
+  expiresAt: string; // YYYY-MM-DD
+};
+
+export type ApplyPromoCodeItem = {
+  productId: string;
+  quantity: number;
+  price: number;
+};
+
+export type ApplyPromoCodeRequest = {
+  code: string;
+  items: ApplyPromoCodeItem[];
+};
+
+export type ApplyPromoCodeResponse = {
+  code: string;
+  discount: number;
+  subtotal: number;
+  total: number;
+};
