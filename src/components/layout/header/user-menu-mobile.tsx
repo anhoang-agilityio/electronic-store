@@ -1,6 +1,6 @@
 'use client';
 
-import { LogOut, User, User as UserIcon } from 'lucide-react';
+import { LogOut, Package, User, User as UserIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 
@@ -84,6 +84,18 @@ export function UserMenuMobile({ onClose }: UserMenuMobileProps) {
           <NavLink href={paths.profile.getHref()} activeClassName="bg-accent">
             <UserIcon className="size-5 mr-3" />
             <span>My Profile</span>
+          </NavLink>
+        </Button>
+
+        <Button
+          variant="ghost"
+          asChild
+          className="text-base justify-start"
+          onClick={onClose}
+        >
+          <NavLink href={paths.orders.getHref()} activeClassName="bg-accent">
+            <Package className="size-5 mr-3" />
+            <span>My orders</span>
           </NavLink>
         </Button>
 
