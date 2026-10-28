@@ -4,7 +4,7 @@ import React from 'react';
 
 import { PromoCodeForm } from '@/features/promo-code/components/promo-code-form';
 import { useCurrentCheckout } from '@/stores/user-store';
-import { getCartSubtotal, getEstimatedTax } from '@/utils/price';
+import { getCheckoutTotals } from '@/utils/price';
 
 import { CheckoutProductCard } from './checkout-product-card';
 
@@ -14,11 +14,13 @@ export function CheckoutSummaryPanel() {
   const address = checkout?.address;
   const shipment = checkout?.shipment;
 
-  const subtotal = getCartSubtotal(products);
-  const estimatedTax = getEstimatedTax(subtotal);
-  const shippingFee = shipment ? shipment.price : 0;
-  const discount = checkout?.promoCode?.discount ?? 0;
-  const total = subtotal + estimatedTax + shippingFee - discount;
+  const {
+    subtotal,
+    tax: estimatedTax,
+    shipping: shippingFee,
+    discount,
+    total,
+  } = getCheckoutTotals(checkout);
 
   return (
     <div className="flex flex-col gap-6 rounded-xl border p-8 w-full">

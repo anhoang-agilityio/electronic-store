@@ -5,14 +5,17 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
+import { generateOrderNumber } from '@/features/order/utils/order-number';
 import {
   Address,
   AppliedPromoCode,
   CartItem,
   CreditCardInfo,
+  Order,
   ShipmentInfo,
   UserData,
 } from '@/types/store';
+import { getCheckoutTotals } from '@/utils/price';
 
 type UserStore = {
   // State
@@ -49,6 +52,9 @@ type UserStore = {
   clearCheckoutAddress: () => void;
   clearCheckoutShipment: () => void;
   clearCheckoutCreditCard: () => void;
+
+  // Order actions
+  placeOrder: () => Order | null;
 
   // Utility actions
   getUserData: (userId: string) => UserData | null;
@@ -369,6 +375,46 @@ export const useUserStore = create<UserStore>()(
         });
       },
 
+      // Order actions
+      placeOrder: () => {
+        const { currentUserId, userData } = get();
+        if (!currentUserId) return null;
+
+        const checkout = userData[currentUserId]?.checkout;
+        if (
+          !checkout ||
+          checkout.products.length === 0 ||
+          !checkout.address ||
+          !checkout.shipment
+        ) {
+          return null;
+        }
+
+        // Snapshot only: credit card details are intentionally not stored
+        const order: Order = {
+          id: uuidv4(),
+          number: generateOrderNumber(),
+          createdAt: new Date().toISOString(),
+          items: checkout.products.map((item) => ({
+            product: { ...item.product },
+            quantity: item.quantity,
+          })),
+          address: { ...checkout.address },
+          shipment: { ...checkout.shipment },
+          promoCode: checkout.promoCode ? { ...checkout.promoCode } : null,
+          totals: getCheckoutTotals(checkout),
+        };
+
+        set((state: UserStore) => {
+          const user = state.userData[currentUserId];
+          if (!user) return;
+
+          user.orders = [order, ...(user.orders ?? [])];
+        });
+
+        return order;
+      },
+
       // Utility actions
       getUserData: (userId: string) => {
         const { userData } = get();
@@ -406,4 +452,20 @@ export const useCurrentCheckout = () => {
   const currentUserId = useUserStore((s) => s.currentUserId);
   const userData = useUserStore((s) => s.userData);
   return currentUserId ? (userData[currentUserId]?.checkout ?? null) : null;
+};
+
+const EMPTY_ORDERS: Order[] = [];
+
+export const useCurrentOrders = () => {
+  const currentUserId = useUserStore((s) => s.currentUserId);
+  const orders = useUserStore((s) =>
+    s.currentUserId ? s.userData[s.currentUserId]?.orders : undefined,
+  );
+  // Orders are prepended on creation, so the stored order is newest first
+  return currentUserId ? (orders ?? EMPTY_ORDERS) : EMPTY_ORDERS;
+};
+
+export const useOrder = (orderId: string) => {
+  const orders = useCurrentOrders();
+  return orders.find((order) => order.id === orderId) ?? null;
 };

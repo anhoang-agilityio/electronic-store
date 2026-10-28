@@ -48,8 +48,32 @@ export type Checkout = {
   promoCode?: AppliedPromoCode | null;
 };
 
+export type OrderTotals = {
+  subtotal: number;
+  tax: number;
+  shipping: number;
+  discount: number;
+  total: number;
+};
+
+export type Order = {
+  id: string;
+  /** Short, human-readable order number, e.g. "ES-7F3K2Q" */
+  number: string;
+  /** ISO date string */
+  createdAt: string;
+  /** Snapshot of the purchased items */
+  items: CartItem[];
+  /** Snapshot of the delivery address */
+  address: Address;
+  shipment: ShipmentInfo;
+  promoCode: AppliedPromoCode | null;
+  totals: OrderTotals;
+};
+
 export type UserData = {
   cart: CartItem[];
   addresses: Address[];
   checkout?: Checkout;
+  orders?: Order[];
 };
