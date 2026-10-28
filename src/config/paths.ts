@@ -28,6 +28,12 @@ export const paths = {
       getHref: () => `/checkout/step-${step}`,
     }),
   },
+  orders: {
+    getHref: () => '/orders',
+    detail: (orderId: string) => ({
+      getHref: () => `/orders/${orderId}`,
+    }),
+  },
   profile: {
     getHref: () => '/profile',
   },
