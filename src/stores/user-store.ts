@@ -5,7 +5,6 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
-import { generateOrderNumber } from '@/features/order/utils/order-number';
 import {
   Address,
   AppliedPromoCode,
@@ -15,6 +14,7 @@ import {
   ShipmentInfo,
   UserData,
 } from '@/types/store';
+import { generateOrderNumber } from '@/utils/order-number';
 import { getCheckoutTotals } from '@/utils/price';
 
 type UserStore = {
@@ -405,14 +405,16 @@ export const useUserStore = create<UserStore>()(
           totals: getCheckoutTotals(checkout),
         };
 
+        let saved = false;
         set((state: UserStore) => {
           const user = state.userData[currentUserId];
           if (!user) return;
 
           user.orders = [order, ...(user.orders ?? [])];
+          saved = true;
         });
 
-        return order;
+        return saved ? order : null;
       },
 
       // Utility actions

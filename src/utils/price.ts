@@ -48,7 +48,8 @@ export function getCheckoutTotals(
   const subtotal = getCartSubtotal(checkout?.products ?? []);
   const tax = getEstimatedTax(subtotal);
   const shipping = checkout?.shipment?.price ?? 0;
-  const discount = checkout?.promoCode?.discount ?? 0;
-  const total = subtotal + tax + shipping - discount;
+  const payable = subtotal + tax + shipping;
+  const discount = Math.min(checkout?.promoCode?.discount ?? 0, payable);
+  const total = payable - discount;
   return { subtotal, tax, shipping, discount, total };
 }
