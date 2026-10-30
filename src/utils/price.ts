@@ -1,4 +1,4 @@
-import { CartItem } from '@/types/store';
+import { CartItem, Checkout, OrderTotals } from '@/types/store';
 
 // Utility functions for cart/checkout price calculations
 
@@ -35,4 +35,21 @@ export function getDiscountedPrice(
 ): number {
   if (!discountPercent || discountPercent <= 0) return Math.round(price);
   return Math.round(price * (1 - discountPercent / 100));
+}
+
+/**
+ * Calculates the full price breakdown for a checkout
+ * @param checkout - Current checkout (may be missing)
+ * @returns subtotal, tax, shipping, discount and total
+ */
+export function getCheckoutTotals(
+  checkout: Checkout | null | undefined,
+): OrderTotals {
+  const subtotal = getCartSubtotal(checkout?.products ?? []);
+  const tax = getEstimatedTax(subtotal);
+  const shipping = checkout?.shipment?.price ?? 0;
+  const payable = subtotal + tax + shipping;
+  const discount = Math.min(checkout?.promoCode?.discount ?? 0, payable);
+  const total = payable - discount;
+  return { subtotal, tax, shipping, discount, total };
 }
