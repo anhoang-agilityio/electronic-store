@@ -1,6 +1,6 @@
 'use client';
 
-import { LogOut, User } from 'lucide-react';
+import { LogOut, Package, User } from 'lucide-react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 
@@ -66,6 +66,12 @@ export function UserMenu() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href={paths.orders.getHref()}>
+            <Package className="mr-2 size-4" />
+            <span>My orders</span>
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem
           className="text-destructive focus:text-destructive"
           onClick={() => void signOut({ callbackUrl: paths.home.getHref() })}

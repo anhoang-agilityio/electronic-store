@@ -2,24 +2,18 @@
 
 import { CircleCheck } from 'lucide-react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
-import { useSyncExternalStore } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { paths } from '@/config/paths';
 import { CheckoutProductCard } from '@/features/checkout/components/checkout-product-card';
-import { useOrder, useUserStore } from '@/stores/user-store';
+import { useOrdersReady } from '@/features/order/hooks/use-orders-ready';
+import { useOrder } from '@/stores/user-store';
 
 type OrderDetailProps = {
   orderId: string;
   placed?: boolean;
 };
-
-const subscribeToHydration = (onChange: () => void) =>
-  useUserStore.persist.onFinishHydration(onChange);
-const getHydrated = () => useUserStore.persist.hasHydrated();
-const getServerHydrated = () => false;
 
 const formatPlacedAt = (iso: string) =>
   new Date(iso).toLocaleString('en-US', {
@@ -60,20 +54,10 @@ function Section({
 }
 
 export function OrderDetail({ orderId, placed = false }: OrderDetailProps) {
-  const { data: session, status } = useSession();
-  const hydrated = useSyncExternalStore(
-    subscribeToHydration,
-    getHydrated,
-    getServerHydrated,
-  );
-  const currentUserId = useUserStore((s) => s.currentUserId);
+  const { session, ready } = useOrdersReady();
   const order = useOrder(orderId);
 
-  // The session user is synced into the store after sign-in, so wait for both
-  const storeReady =
-    hydrated && (!session?.user?.id || currentUserId === session.user.id);
-
-  if (status === 'loading' || !storeReady) {
+  if (!ready) {
     return <OrderDetailSkeleton />;
   }
 
