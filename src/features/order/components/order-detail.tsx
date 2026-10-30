@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { paths } from '@/config/paths';
 import { CheckoutProductCard } from '@/features/checkout/components/checkout-product-card';
+import { BuyAgainButton } from '@/features/order/components/buy-again-button';
 import { useOrdersReady } from '@/features/order/hooks/use-orders-ready';
 import { useOrder } from '@/stores/user-store';
 
@@ -163,9 +164,12 @@ export function OrderDetail({ orderId, placed = false }: OrderDetailProps) {
         </div>
       </section>
 
-      <Button asChild variant="outline">
-        <Link href={paths.orders.getHref()}>Back to my orders</Link>
-      </Button>
+      <div className="flex flex-wrap gap-3">
+        <BuyAgainButton order={order} />
+        <Button asChild variant="outline">
+          <Link href={paths.orders.getHref()}>Back to my orders</Link>
+        </Button>
+      </div>
     </main>
   );
 }
