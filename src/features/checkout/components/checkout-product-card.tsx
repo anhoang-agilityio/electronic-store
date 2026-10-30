@@ -5,6 +5,7 @@ type CheckoutProduct = {
   image: string;
   name: string;
   price: string;
+  quantity?: number;
 };
 
 type CheckoutProductCardProps = {
@@ -12,7 +13,7 @@ type CheckoutProductCardProps = {
 };
 
 export function CheckoutProductCard({ product }: CheckoutProductCardProps) {
-  const { image, name, price } = product;
+  const { image, name, price, quantity } = product;
   return (
     <div className="flex items-center gap-4 bg-input rounded-xl p-4 pr-0 w-full">
       {/* Product Image */}
@@ -21,6 +22,11 @@ export function CheckoutProductCard({ product }: CheckoutProductCardProps) {
       </div>
       {/* Product Info */}
       <span className="flex-1 font-medium truncate">{name}</span>
+      {quantity !== undefined && (
+        <span className="text-sm text-gray-600 whitespace-nowrap">
+          x{quantity}
+        </span>
+      )}
       <span className="font-bold whitespace-nowrap pr-6">${price}</span>
     </div>
   );
