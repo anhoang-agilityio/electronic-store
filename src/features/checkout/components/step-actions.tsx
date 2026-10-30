@@ -24,6 +24,8 @@ export function StepActions({ currentStep, onPaySubmit }: StepActionsProps) {
 
   const clearCheckout = useUserStore((s) => s.clearCheckout);
   const clearCart = useUserStore((s) => s.clearCart);
+  const placeOrder = useUserStore((s) => s.placeOrder);
+  const payInFlight = React.useRef(false);
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [payLoading, setPayLoading] = React.useState(false);
 
@@ -62,16 +64,30 @@ export function StepActions({ currentStep, onPaySubmit }: StepActionsProps) {
     setConfirmOpen(true);
   }
 
-  // Confirm payment: clear checkout & cart, then navigate home
+  // Confirm payment: create the order, clear checkout & cart, then show it
   function handleConfirmPay() {
+    // Ref guard: state updates are async, so a fast double-click could slip past payLoading
+    if (payLoading || payInFlight.current) return;
+    payInFlight.current = true;
     setPayLoading(true);
     setTimeout(() => {
-      clearCheckout();
-      clearCart();
+      const order = placeOrder();
+      payInFlight.current = false;
       setPayLoading(false);
+
+      if (!order) {
+        // Keep the dialog open and leave checkout/cart untouched
+        toast.error('Could not place your order. Please try again.');
+        return;
+      }
+
+      clearCheckout();
+      // Checkout always holds the whole cart (see CartSummary), so clearing it all is correct
+      clearCart();
       setConfirmOpen(false);
       toast.success('Payment successful!');
-      router.push(paths.home.getHref());
+      // replace: Back must not land on an emptied checkout step 3
+      router.replace(`${paths.orders.detail(order.id).getHref()}?placed=1`);
     }, 600); // Simulate processing
   }
 
